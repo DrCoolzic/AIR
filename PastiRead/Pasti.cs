@@ -1,6 +1,6 @@
 /*!
 @file Pasti.cs
-<summary>Pasti STX file definition</summary>
+<summary>Pasti STX file - Basic structures definition</summary>
 
 <div class="jlg">Copyright (C) 2014 Jean Louis-Guerin\n\n
 This file is part of the Atari Image Reader (AIR) project.\n
@@ -48,6 +48,7 @@ namespace Pasti {
 		/// <remarks>
 		/// - 0x01 for file generated with the Atari imaging tool, and 
 		/// - 0xCC for file generated with the Discovery Cartridge (DC) imaging tool</remarks>
+		/// - 0x10 for file generated with the Aufit program
 		public ushort tool;
 		/// <summary>Reserved</summary>
 		public ushort reserved_1;
@@ -70,7 +71,7 @@ namespace Pasti {
 			return String.Format("Pasti file version {0}.{1} Image Tool={2:X2} - Number of tracks={3}",
 				version, revision, tool, trackCount);
 		}
-	}
+	}	// FileDesc
 
 
 	/// <summary>Pasti File Track Descriptor</summary>
@@ -132,7 +133,7 @@ namespace Pasti {
 				((trackFlags & TRK_SECT)) != 0 ? "SectorDesc" : "", recordSize);
 		}
 
-	}
+	}	// TrackDesc
 
 
 	/// <summary>Address Segment</summary>
@@ -158,7 +159,7 @@ namespace Pasti {
 			return String.Format("T={0,-2} H={1} SN={2,-3} S={3} CRC={4:X4}",
 				track, head, number, size,crc);
 		}
-	}
+	}	// Address
 
 
 	/// <summary>Pasti File Sector Descriptor</summary>
@@ -231,10 +232,10 @@ namespace Pasti {
 		/// <returns>The string</returns>		
 		public override string ToString() {
 			//return base.ToString();
-			return String.Format("   Sector {0} bitPos={1,-6} Time={2,-5} Flags={3:X2} Off={4,-6}",
-				address.ToString(), bitPosition, readTime, fdcFlags, dataOffset);
+			return String.Format("   Sector {0} bitPos={1,-6} Time={2,-5} Flags={3:X2} {4}{5} Off={6,-6}",
+				address.ToString(), bitPosition, readTime, fdcFlags, ((fdcFlags & FUZZY_BITS) != 0) ? "F" : " ",
+				((fdcFlags & BIT_WIDTH) != 0) ? "T" : " ", dataOffset);
 		}
-
-	}
+	}	// SectDesc
 
 }	// Pasti name space
