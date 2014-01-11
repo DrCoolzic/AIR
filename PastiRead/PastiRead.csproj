@@ -61,14 +61,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="FloppyStruct.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Pasti.cs" />
-    <Compile Include="pastiRead.cs" />
+    <Compile Include="PastiStruct.cs" />
+    <Compile Include="PastiRead.cs" />
+    <Compile Include="PastiWrite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

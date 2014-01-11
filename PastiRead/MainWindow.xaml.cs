@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA\n</di
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,13 +40,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using Pasti;
-
-namespace PastiRead {
+namespace Pasti {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow : Window {
+		Floppy _fd;
+
 		public MainWindow() {
 			InitializeComponent();
 		}
@@ -56,10 +57,53 @@ namespace PastiRead {
 			bool? ok = ofd.ShowDialog();
 			if (ok == true) {
 				fileName.Text = ofd.FileName;
-				PastiReader.Floppy fd = new PastiReader.Floppy();
-				PastiReader.readPasti(ofd.FileName, fd, infoBox);
+				PastiReader pasti = new PastiReader(infoBox);
+				_fd = new Floppy();
+				pasti.readPasti(ofd.FileName, _fd);
 			}
 
+		}
+
+		private void btWriteClick(object sender, RoutedEventArgs e) {
+
+			if (_fd == null) {
+				MessageBox.Show("Nothing to write", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				return;
+			}
+				
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.Filter = "Pasti file|*.stx|All Files|*.*";
+			askOutput:
+
+			bool? ok = ofd.ShowDialog();
+			if (ok == true) {
+				fileName.Text = ofd.FileName;
+				if (File.Exists(ofd.FileName)) {
+					MessageBoxResult result = MessageBox.Show("Do you want to overwrite?", "File already exist", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No); 
+					if (result == MessageBoxResult.Cancel) return;
+					if (result == MessageBoxResult.No) goto askOutput;					
+				}				
+				PastiWriter pasti = new PastiWriter(infoBox);
+				pasti.writePasti(ofd.FileName, _fd);
+			}
+		}
+
+		private MessageBoxResult ask(string caption, string messageBoxText) {
+			// Configure the message box
+			//string messageBoxText = "message text";
+			//string caption = "caption text";
+			MessageBoxButton button = MessageBoxButton.YesNoCancel;
+			MessageBoxImage icon = MessageBoxImage.Question;
+			MessageBoxResult defaultResult = MessageBoxResult.Cancel;
+			//MessageBoxOptions options = MessageBoxOptions.None;
+
+			// Show message box, passing the window owner if specified
+			MessageBoxResult result;
+			result = MessageBox.Show(messageBoxText, caption, button, icon, defaultResult);
+
+			// Show the result
+			// resultTextBlock.Text = "Result = " + result.ToString();
+			return result;
 		}
 	}
 }

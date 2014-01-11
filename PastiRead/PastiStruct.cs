@@ -1,5 +1,5 @@
 /*!
-@file Pasti.cs
+@file PastiStruct.cs
 <summary>Pasti STX file - Basic structures definition</summary>
 
 <div class="jlg">Copyright (C) 2014 Jean Louis-Guerin\n\n
@@ -76,7 +76,7 @@ namespace Pasti {
 
 	/// <summary>Pasti File Track Descriptor</summary>
 	/// <remarks>There is one track record for each track described in the Pasti file</remarks>
-	public class TrackDesc {
+	public struct TrackDesc {
 		/// <summary>Total size of this track record.</summary>
 		/// <remarks>Therefore the position of the next Track descriptor (if any) in the file is 
 		/// equal to the position of the current Track descriptor plus recordSize.</remarks>
@@ -119,7 +119,7 @@ namespace Pasti {
 		/// <summary> track contains protections ? not used</summary>
 		public const byte TRK_PROT = 0x20; 
 		/// <summary>The track record contains sectorCount SectDesc</summary> 
-		public const byte TRK_SECT = 0x01;
+		public const byte TRK_SECT_DESC = 0x01;
 
 		/// <summary>
 		/// Override ToString() to display Track header information
@@ -127,10 +127,10 @@ namespace Pasti {
 		/// <returns>The string</returns>
 		public override string ToString() {
 			//return base.ToString();
-			return String.Format("Track {0:D2}.{1:D1} {2} bytes {3} sect FuzBytes={4} {5} {6} RecSize={7}",
-				trackNumber & 0x7F, (trackNumber & 0x80) >> 7, trackLength, sectorCount, (fuzzyCount == 0) ? "No" : String.Format("{0}", fuzzyCount),
-				((trackFlags & TRK_IMAGE)) != 0 ? "TrackImage" : "", 
-				((trackFlags & TRK_SECT)) != 0 ? "SectorDesc" : "", recordSize);
+			return String.Format("Track {0:D2}.{1:D1} {2} bytes {3} sect FuzBytes={4} Flag={5:X2} {6} {7} RecSize={8}",
+				trackNumber & 0x7F, (trackNumber & 0x80) >> 7, trackLength, sectorCount, (fuzzyCount == 0) ? "No" : String.Format("{0}", fuzzyCount), trackFlags,
+				((trackFlags & TRK_IMAGE)) != 0 ? "TImage" : "", 
+				((trackFlags & TRK_SECT_DESC)) != 0 ? "SDesc" : "", recordSize);
 		}
 
 	}	// TrackDesc
@@ -138,11 +138,11 @@ namespace Pasti {
 
 	/// <summary>Address Segment</summary>
 	/// <remarks>This structure is used to store all the information from the address field</remarks>
-	public class Address {
+	public class IDField {
 		/// <summary>Track number from address field</summary> 
 		public byte track;
 		/// <summary>Head number from address field</summary>
-		public byte head;
+		public byte side;
 		/// <summary>Sector number from address field</summary> 
 		public byte number;
 		/// <summary>Size value from address field</summary> 
@@ -157,9 +157,9 @@ namespace Pasti {
 		public override string ToString() {
 			//return base.ToString();
 			return String.Format("T={0,-2} H={1} SN={2,-3} S={3} CRC={4:X4}",
-				track, head, number, size,crc);
+				track, side, number, size,crc);
 		}
-	}	// Address
+	}	// IdField
 
 
 	/// <summary>Pasti File Sector Descriptor</summary>
@@ -188,7 +188,7 @@ namespace Pasti {
 		/// </remarks>
 		public ushort readTime;
 		/// <summary>Address field of sector (refer to the Address structure)</summary> 
-		public Address address = new Address();
+		public IDField id = new IDField();
  		/// <summary>This field contains a mixture of the FDC status, as it would have been read by the WD1772, 
 		/// and other flags used to interpret the track record content.</summary>
 		/// <remarks> 
@@ -233,7 +233,7 @@ namespace Pasti {
 		public override string ToString() {
 			//return base.ToString();
 			return String.Format("   Sector {0} bitPos={1,-6} Time={2,-5} Flags={3:X2} {4}{5} Off={6,-6}",
-				address.ToString(), bitPosition, readTime, fdcFlags, ((fdcFlags & FUZZY_BITS) != 0) ? "F" : " ",
+				id.ToString(), bitPosition, readTime, fdcFlags, ((fdcFlags & FUZZY_BITS) != 0) ? "F" : " ",
 				((fdcFlags & BIT_WIDTH) != 0) ? "T" : " ", dataOffset);
 		}
 	}	// SectDesc
