@@ -46,6 +46,10 @@ namespace Pasti {
 	/// </summary>
 	public partial class MainWindow : Window {
 		Floppy _fd;
+		BufferWindow _trackWindow = null;
+		BufferWindow _sectorWindow = null;
+		bool _trackWindowOpen = false;
+		bool _sectorWindowOpen = false;
 
 		public MainWindow() {
 			InitializeComponent();
@@ -70,40 +74,80 @@ namespace Pasti {
 				MessageBox.Show("Nothing to write", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 				return;
 			}
-				
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.Filter = "Pasti file|*.stx|All Files|*.*";
-			askOutput:
 
-			bool? ok = ofd.ShowDialog();
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.Filter = "Pasti file|*.stx|All Files|*.*";
+//			askOutput:
+
+			bool? ok = sfd.ShowDialog();
 			if (ok == true) {
-				fileName.Text = ofd.FileName;
-				if (File.Exists(ofd.FileName)) {
-					MessageBoxResult result = MessageBox.Show("Do you want to overwrite?", "File already exist", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No); 
-					if (result == MessageBoxResult.Cancel) return;
-					if (result == MessageBoxResult.No) goto askOutput;					
-				}				
+				fileName.Text = sfd.FileName;
+				//if (File.Exists(sfd.FileName)) {
+				//	MessageBoxResult result = MessageBox.Show("Do you want to overwrite?", "File already exist", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.No); 
+				//	if (result == MessageBoxResult.Cancel) return;
+				//	if (result == MessageBoxResult.No) goto askOutput;					
+				//}				
 				PastiWriter pasti = new PastiWriter(infoBox);
-				pasti.writePasti(ofd.FileName, _fd);
+				pasti.writePasti(sfd.FileName, _fd);
 			}
 		}
 
-		private MessageBoxResult ask(string caption, string messageBoxText) {
-			// Configure the message box
-			//string messageBoxText = "message text";
-			//string caption = "caption text";
-			MessageBoxButton button = MessageBoxButton.YesNoCancel;
-			MessageBoxImage icon = MessageBoxImage.Question;
-			MessageBoxResult defaultResult = MessageBoxResult.Cancel;
-			//MessageBoxOptions options = MessageBoxOptions.None;
+		private void btTrackClick(object sender, RoutedEventArgs e) {
+			int trackNumber;
+			int sideNumber;
+			tbStatus.Clear();
+			if (Int32.TryParse(tbTrack.Text, out trackNumber) == false)
+				tbStatus.Text = "Invalid track number - please correct and try again";
+			if (Int32.TryParse(tbSide.Text, out sideNumber) == false)
+				tbStatus.Text = "Invalid side number - please correct and try again";
+			
+			if ((trackNumber < 0) || (trackNumber > 84) || (sideNumber < 0) || (sideNumber > 1))
+				tbStatus.Text = "Track or Side out of range - please correct and try again";
+			if (_fd == null)
+				tbStatus.Text = "Nothing to display";
 
-			// Show message box, passing the window owner if specified
-			MessageBoxResult result;
-			result = MessageBox.Show(messageBoxText, caption, button, icon, defaultResult);
+			if (_trackWindowOpen)
+				_trackWindow.Close();
 
-			// Show the result
-			// resultTextBlock.Text = "Result = " + result.ToString();
-			return result;
+			_trackWindow = new BufferWindow();
+			_trackWindow.drawTrackBuffer(_fd, trackNumber, sideNumber);
+			_trackWindow.Closed += new EventHandler(trackWindowClosed);
+			_trackWindowOpen = true;
+			_trackWindow.Show();
 		}
+
+		void trackWindowClosed(object sender, EventArgs e) {
+			_trackWindowOpen = false;
+		}
+
+
+		private void btSectorsClick(object sender, RoutedEventArgs e) {
+			int trackNumber;
+			int sideNumber;
+			tbStatus.Clear();
+			if (Int32.TryParse(tbTrack.Text, out trackNumber) == false)
+				tbStatus.Text = "Invalid track number - please correct and try again";
+			if (Int32.TryParse(tbSide.Text, out sideNumber) == false)
+				tbStatus.Text = "Invalid side number - please correct and try again";
+
+			if ((trackNumber < 0) || (trackNumber > 84) || (sideNumber < 0) || (sideNumber > 1))
+				tbStatus.Text = "Track or Side out of range - please correct and try again";
+			if (_fd == null)
+				tbStatus.Text = "Nothing to display";
+
+			if (_sectorWindowOpen)
+				_sectorWindow.Close();
+
+			_sectorWindow = new BufferWindow();
+			_sectorWindow.drawSectorBuffer(_fd, trackNumber, sideNumber);
+			_sectorWindow.Closed += new EventHandler(sectorWindowClosed);
+			_sectorWindowOpen = true;
+			_sectorWindow.Show();
+		}
+
+		void sectorWindowClosed(object sender, EventArgs e) {
+			_sectorWindowOpen = false;
+		}
+
 	}
 }

@@ -118,13 +118,14 @@ namespace Pasti {
 			_infoBox.AppendText(String.Format(" - ({0}-{1})\n", startPos, bpos-1));
 			_infoBox.ScrollToHome();
 
-			fd.tracks = new Track[file.trackCount];	// create an array of track
-			fd.trackCount = file.trackCount;		// store the number of tracks
-			fd.version = (byte)(file.version * 10 + file.revision);
-			fd.tool = file.tool;
+			//fd.tracks = new Track[file.trackCount];	// create an array of track
+			fd.tracks = new Track[85, 2];
+			//fd.trackCount = file.trackCount;		// store the number of tracks
+			//fd.version = (byte)(file.version * 10 + file.revision);
+			//fd.tool = file.tool;
 						
 			TrackDesc td = new TrackDesc();
-			for (int tnum = 0; tnum < fd.trackCount; tnum++) {
+			for (int tnum = 0; tnum < file.trackCount; tnum++) {
 				uint track_record_start = bpos;
 				startPos = bpos;
 				Debug.Assert((startPos %2) == 0, "Track Descriptor not word aligned", String.Format("Address = {0}", startPos));
@@ -137,18 +138,20 @@ namespace Pasti {
 				td.trackNumber	= readByte(buffer, ref bpos);
 				td.trackType	= readByte(buffer, ref bpos);
 				maxBufPos = bpos;
+				int track = td.trackNumber & 0x7F;
+				int side = (td.trackNumber & 0x80) >> 7;
 
 				_infoBox.AppendText(td.ToString());
 				_infoBox.AppendText(String.Format(" ({0}-{1})\n", startPos, bpos-1));
 
-				fd.tracks[tnum] = new Track();
+				fd.tracks[track, side] = new Track();
 
 				// create array of sector for this track
-				fd.tracks[tnum].sectors = new Sector[td.sectorCount];
-				fd.tracks[tnum].sectorCount = td.sectorCount;
-				fd.tracks[tnum].byteCount = td.trackLength;
-				fd.tracks[tnum].side = (uint)(td.trackNumber >> 7);
-				fd.tracks[tnum].number = (uint)(td.trackNumber & 0x7F);
+				fd.tracks[track, side].sectors = new Sector[td.sectorCount];
+				fd.tracks[track, side].sectorCount = td.sectorCount;
+				fd.tracks[track, side].byteCount = td.trackLength;
+				fd.tracks[track, side].side = (uint)(td.trackNumber >> 7);
+				fd.tracks[track, side].number = (uint)(td.trackNumber & 0x7F);
 
 				// read sector descriptors if specified
 				if ((td.trackFlags & TrackDesc.TRK_SECT_DESC) != 0) {
@@ -172,12 +175,12 @@ namespace Pasti {
 						_infoBox.AppendText(sectors[snum].ToString());
 						_infoBox.AppendText(String.Format(" ({0}-{1})\n", startPos, bpos-1));
 
-						fd.tracks[tnum].sectors[snum] = new Sector();
-						fd.tracks[tnum].sectors[snum].fdcFlags = sectors[snum].fdcFlags;
-						fd.tracks[tnum].sectors[snum].bitPosition = sectors[snum].bitPosition;
-						fd.tracks[tnum].sectors[snum].readTime = sectors[snum].readTime;
-						fd.tracks[tnum].sectors[snum].id = sectors[snum].id;
-						fd.tracks[tnum].sectors[snum].fdcFlags = sectors[snum].fdcFlags;
+						fd.tracks[track, side].sectors[snum] = new Sector();
+						fd.tracks[track, side].sectors[snum].fdcFlags = sectors[snum].fdcFlags;
+						fd.tracks[track, side].sectors[snum].bitPosition = sectors[snum].bitPosition;
+						fd.tracks[track, side].sectors[snum].readTime = sectors[snum].readTime;
+						fd.tracks[track, side].sectors[snum].id = sectors[snum].id;
+						fd.tracks[track, side].sectors[snum].fdcFlags = sectors[snum].fdcFlags;
 					} // for all sectors
  						
 					byte[] fuzzyMask = null;
@@ -200,21 +203,21 @@ namespace Pasti {
 						startPos = bpos;
 						// read sync if provided
 						if ((td.trackFlags & TrackDesc.TRK_SYNC) != 0)
-							fd.tracks[tnum].firstSyncOffset = readUInt16(buffer, ref bpos);
+							fd.tracks[track, side].firstSyncOffset = readUInt16(buffer, ref bpos);
 						else
-							fd.tracks[tnum].firstSyncOffset = 0;
+							fd.tracks[track, side].firstSyncOffset = 0;
 						// read track data size
-						fd.tracks[tnum].byteCount = readUInt16(buffer, ref bpos);
+						fd.tracks[track, side].byteCount = readUInt16(buffer, ref bpos);
 						// read track data
-						fd.tracks[tnum].trackData = new byte[fd.tracks[tnum].byteCount];
-						for (int i = 0; i < fd.tracks[tnum].byteCount; i++)
-							fd.tracks[tnum].trackData[i] = readByte(buffer, ref bpos);
+						fd.tracks[track, side].trackData = new byte[fd.tracks[track, side].byteCount];
+						for (int i = 0; i < fd.tracks[track, side].byteCount; i++)
+							fd.tracks[track, side].trackData[i] = readByte(buffer, ref bpos);
 						// seems like we are reading even number
 						maxBufPos = Math.Max(maxBufPos, bpos + bpos%2);
-						fd.tracks[tnum].standardTrack = false;
+						fd.tracks[track, side].standardTrack = false;
 						_infoBox.AppendText(String.Format("      Reading Track {0}{1} bytes SyncPos={2} ({3}-{4})\n",
-							fd.tracks[tnum].byteCount + (((td.trackFlags & TrackDesc.TRK_SYNC) != 0) ? 4 : 2), (bpos % 2 != 0) ? "(+1)" : "",
-							fd.tracks[tnum].firstSyncOffset, startPos, bpos + (bpos % 2) - 1));
+							fd.tracks[track, side].byteCount + (((td.trackFlags & TrackDesc.TRK_SYNC) != 0) ? 4 : 2), (bpos % 2 != 0) ? "(+1)" : "",
+							fd.tracks[track, side].firstSyncOffset, startPos, bpos + (bpos % 2) - 1));
 					} // read track_data
 
 					// read all sectors data
@@ -225,14 +228,14 @@ namespace Pasti {
 
 						// create sector buffer and read data if necessary
 						if ( (sectors[snum].fdcFlags & SectorDesc.SECT_RNF) == 0) {
-							fd.tracks[tnum].sectors[snum].sectorData = new byte[128 << sectors[snum].id.size];
+							fd.tracks[track, side].sectors[snum].sectorData = new byte[128 << sectors[snum].id.size];
 							bpos = track_data_start + sectors[snum].dataOffset;
 							startPos = bpos;							
 							for (int i = 0; i < 128 << sectors[snum].id.size; i++)
-								fd.tracks[tnum].sectors[snum].sectorData[i] = readByte(buffer, ref bpos);
+								fd.tracks[track, side].sectors[snum].sectorData[i] = readByte(buffer, ref bpos);
 							maxBufPos = Math.Max(maxBufPos, bpos);
 							_infoBox.AppendText(String.Format("      Reading Sector {0} {1} bytes ({2}-{3})\n",
-								fd.tracks[tnum].sectors[snum].id.number, 128 << sectors[snum].id.size, startPos, bpos - 1));
+								fd.tracks[track, side].sectors[snum].id.number, 128 << sectors[snum].id.size, startPos, bpos - 1));
 						} // read sector data
 					}	// for all sectors
 
@@ -259,30 +262,30 @@ namespace Pasti {
 					int startTiming = 0;
 					for (int snum = 0; snum < td.sectorCount; snum++) {
 						// fuzzy bytes
-						if ((fd.tracks[tnum].sectors[snum].fdcFlags & SectorDesc.FUZZY_BITS) != 0) {
+						if ((fd.tracks[track, side].sectors[snum].fdcFlags & SectorDesc.FUZZY_BITS) != 0) {
 							int fsize = 128 << sectors[snum].id.size;
-							fd.tracks[tnum].sectors[snum].sectorFuzzy = new byte[fsize];
+							fd.tracks[track, side].sectors[snum].fuzzyData = new byte[fsize];
 							for (int i = 0; i < fsize; i++)
-								fd.tracks[tnum].sectors[snum].sectorFuzzy[i] = fuzzyMask[i + startFuzzy];
+								fd.tracks[track, side].sectors[snum].fuzzyData[i] = fuzzyMask[i + startFuzzy];
 							startFuzzy += fsize;
-							_infoBox.AppendText(String.Format("      Transferring {0} Fuzzy bytes to sect {1}\n", fsize, fd.tracks[tnum].sectors[snum].id.number));
+							_infoBox.AppendText(String.Format("      Transferring {0} Fuzzy bytes to sect {1}\n", fsize, fd.tracks[track, side].sectors[snum].id.number));
 						}
 						// timing bytes
 						if ((sectors[snum].fdcFlags & SectorDesc.BIT_WIDTH) != 0) {
 							int tsize = (128 << sectors[snum].id.size) / 16;
-							fd.tracks[tnum].sectors[snum].sectorTiming = new ushort[tsize];							
+							fd.tracks[track, side].sectors[snum].timmingData = new ushort[tsize];							
 							if (file.revision == 2) {
 								for (int i = 0; i < tsize; i++)
-									fd.tracks[tnum].sectors[snum].sectorTiming[i] = timing[i + startTiming];
+									fd.tracks[track, side].sectors[snum].timmingData[i] = timing[i + startTiming];
 								startTiming += tsize;
-								_infoBox.AppendText(String.Format("      Transferring {0} Timing values to sect {1}\n", tsize, fd.tracks[tnum].sectors[snum].id.number));
+								_infoBox.AppendText(String.Format("      Transferring {0} Timing values to sect {1}\n", tsize, fd.tracks[track, side].sectors[snum].id.number));
 							}	// revision == 2 => read timing from file							
 							else {
 								for (int i = 0; i < tsize; i++) {
-									if (i < (tsize / 4)) fd.tracks[tnum].sectors[snum].sectorTiming[i] = 127;
-									else if (i < (tsize / 2)) fd.tracks[tnum].sectors[snum].sectorTiming[i] = 133;
-									else if (i < ((3 * tsize) / 2)) fd.tracks[tnum].sectors[snum].sectorTiming[i] = 121;
-									else fd.tracks[tnum].sectors[snum].sectorTiming[i] = 127;
+									if (i < (tsize / 4)) fd.tracks[track, side].sectors[snum].timmingData[i] = 127;
+									else if (i < (tsize / 2)) fd.tracks[track, side].sectors[snum].timmingData[i] = 133;
+									else if (i < ((3 * tsize) / 2)) fd.tracks[track, side].sectors[snum].timmingData[i] = 121;
+									else fd.tracks[track, side].sectors[snum].timmingData[i] = 127;
 								}
 							}	// if revision != 2 => we simulate with a table
 						}
@@ -297,20 +300,20 @@ namespace Pasti {
 					// read all standard sectors
 					for (int snum = 0; snum < td.sectorCount; snum++) {
 						startPos = bpos;
-						fd.tracks[tnum].sectors[snum] = new Sector();
-						fd.tracks[tnum].sectors[snum].sectorData = new byte[512];
+						fd.tracks[track, side].sectors[snum] = new Sector();
+						fd.tracks[track, side].sectors[snum].sectorData = new byte[512];
 						for (int i = 0; i < 512; i++)
-							fd.tracks[tnum].sectors[snum].sectorData[i] = readByte(buffer, ref bpos);
+							fd.tracks[track, side].sectors[snum].sectorData[i] = readByte(buffer, ref bpos);
 
-						fd.tracks[tnum].sectors[snum].fdcFlags = 0;
-						fd.tracks[tnum].sectors[snum].bitPosition = 0;
-						fd.tracks[tnum].sectors[snum].readTime = 0;
-						fd.tracks[tnum].sectors[snum].sectorFuzzy = null;
-						fd.tracks[tnum].sectors[snum].sectorTiming = null;
-						fd.tracks[tnum].sectors[snum].id.track = (byte)(td.trackNumber & 0x7F);
-						fd.tracks[tnum].sectors[snum].id.side = (byte)(((td.trackNumber & 0x80) == 0x80) ? 1 : 0);
-						fd.tracks[tnum].sectors[snum].id.number = (byte)snum;
-						fd.tracks[tnum].sectors[snum].id.crc = 0;
+						fd.tracks[track, side].sectors[snum].fdcFlags = 0;
+						fd.tracks[track, side].sectors[snum].bitPosition = 0;
+						fd.tracks[track, side].sectors[snum].readTime = 0;
+						fd.tracks[track, side].sectors[snum].fuzzyData = null;
+						fd.tracks[track, side].sectors[snum].timmingData = null;
+						fd.tracks[track, side].sectors[snum].id.track = (byte)(td.trackNumber & 0x7F);
+						fd.tracks[track, side].sectors[snum].id.side = (byte)(((td.trackNumber & 0x80) == 0x80) ? 1 : 0);
+						fd.tracks[track, side].sectors[snum].id.number = (byte)snum;
+						fd.tracks[track, side].sectors[snum].id.crc = 0;
 						_infoBox.AppendText(String.Format("      Standard Sector {0} {1} bytes ({2}-{3})\n", snum, 512, startPos, bpos));
 						maxBufPos = Math.Max(maxBufPos, bpos);
 					} // read all sector

@@ -11,9 +11,9 @@ namespace Pasti {
 		/// <summary>buffer for the sector data</summary> 
 		public byte[] sectorData;
 		/// <summary>buffer for fuzzy mask bytes if necessary</summary> 
-		public byte[] sectorFuzzy;
+		public byte[] fuzzyData;
 		/// <summary>buffer for timing bytes if necessary</summary>
-		public ushort[] sectorTiming;
+		public ushort[] timmingData;
 		/// <summary>position in the track of the sector address field in bits</summary>
 		public ushort bitPosition;
 		/// <summary>read time of the track in ms or 0 if standard sector</summary>
@@ -56,20 +56,20 @@ namespace Pasti {
 	/// <remarks>Complete floppy information (i.e. all tracks)</remarks>
 	public class Floppy {
 		/// <summary>Array of Tracks</summary>
-		public Track[] tracks;
+		public Track[,] tracks;
 		/// <summary>Total number of tracks</summary>
 		/// <remarks>Not really needed should be equal to tracks.Length</remarks>
-		public byte trackCount;
+		//public byte trackCount;
 		/// <summary>Contains Pasti version</summary>
 		/// <remarks>The format uses the upper nibble as major revision and the lower nibble as minor revision. For example 0x32 is version 3.2</remarks>
-		public byte version;
+		//public byte version;
 		/// <summary>Pasti imaging tool</summary>
 		/// <remarks>The tool used to create the Past image
 		/// - 0x01 Ijor Atari imaging tool
 		/// - 0xCC Ijor Discovery Cartridge based imaging tool
 		/// - 0x10 DrCoolZic Aufit imaging Tool
 		/// - 0xFF Reserved for Test (e.g. tool provided here)</remarks>
-		public ushort tool;
+		//public ushort tool;
 	}
 
 }
