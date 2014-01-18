@@ -54,7 +54,10 @@ namespace Pasti {
 		/// <summary>
 		/// Draw the content of the buffer
 		/// </summary>
-		public void drawSectorBuffer(Floppy floppy, int track, int side) {
+		/// <param name="floppy">Pointer to the floppy disk structure</param>
+		/// <param name="track">The track number of the track to display</param>
+		/// <param name="side">The side of the track to display</param>
+		public void displaySectorBuffer(Floppy floppy, int track, int side) {
 
 			displayBuffer.FontFamily = new FontFamily("Consolas");
 			displayBuffer.FontSize = 16;
@@ -99,7 +102,8 @@ namespace Pasti {
 		/// </summary>
 		/// <param name="track">Specifies the track from the disk</param>
 		/// <param name="side">Specifies the side from the disk</param>
-		public void drawTrackBuffer(Floppy floppy, int track, int side) {
+		/// <param name="floppy">The floppy disk structure</param>
+		public void displayTrackBuffer(Floppy floppy, int track, int side) {
 			Track t = floppy.tracks[track, side];
 			displayBuffer.FontFamily = new FontFamily("Consolas");
 			displayBuffer.FontSize = 16;

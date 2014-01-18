@@ -36,6 +36,10 @@ namespace Pasti {
 	public class PastiReader {
 		TextBox _infoBox;
 
+		/// <summary>
+		/// The Pasti reader constructor
+		/// </summary>
+		/// <param name="tb">The textbox used to display information</param>
 		public PastiReader(TextBox tb) {
 			_infoBox = tb;
 		}
@@ -215,7 +219,7 @@ namespace Pasti {
 						// seems like we are reading even number
 						maxBufPos = Math.Max(maxBufPos, bpos + bpos%2);
 						fd.tracks[track, side].standardTrack = false;
-						_infoBox.AppendText(String.Format("      Reading Track {0}{1} bytes SyncPos={2} ({3}-{4})\n",
+						_infoBox.AppendText(String.Format("      Reading Track Image {0}{1} bytes SyncPos={2} ({3}-{4})\n",
 							fd.tracks[track, side].byteCount + (((td.trackFlags & TrackDesc.TRK_SYNC) != 0) ? 4 : 2), (bpos % 2 != 0) ? "(+1)" : "",
 							fd.tracks[track, side].firstSyncOffset, startPos, bpos + (bpos % 2) - 1));
 					} // read track_data
@@ -234,8 +238,9 @@ namespace Pasti {
 							for (int i = 0; i < 128 << sectors[snum].id.size; i++)
 								fd.tracks[track, side].sectors[snum].sectorData[i] = readByte(buffer, ref bpos);
 							maxBufPos = Math.Max(maxBufPos, bpos);
-							_infoBox.AppendText(String.Format("      Reading Sector {0} {1} bytes ({2}-{3})\n",
-								fd.tracks[track, side].sectors[snum].id.number, 128 << sectors[snum].id.size, startPos, bpos - 1));
+							_infoBox.AppendText(String.Format("      Reading Sector {0} {1} bytes ({2}-{3}) {4}\n",
+								fd.tracks[track, side].sectors[snum].id.number, 128 << sectors[snum].id.size, startPos, bpos - 1,
+								(((td.trackFlags & TrackDesc.TRK_IMAGE) != 0) && (sectors[snum].dataOffset < fd.tracks[track, side].byteCount)) ? " in Track Image" : ""));
 						} // read sector data
 					}	// for all sectors
 

@@ -110,7 +110,7 @@ namespace Pasti {
 				_trackWindow.Close();
 
 			_trackWindow = new BufferWindow();
-			_trackWindow.drawTrackBuffer(_fd, trackNumber, sideNumber);
+			_trackWindow.displayTrackBuffer(_fd, trackNumber, sideNumber);
 			_trackWindow.Closed += new EventHandler(trackWindowClosed);
 			_trackWindowOpen = true;
 			_trackWindow.Show();
@@ -139,7 +139,7 @@ namespace Pasti {
 				_sectorWindow.Close();
 
 			_sectorWindow = new BufferWindow();
-			_sectorWindow.drawSectorBuffer(_fd, trackNumber, sideNumber);
+			_sectorWindow.displaySectorBuffer(_fd, trackNumber, sideNumber);
 			_sectorWindow.Closed += new EventHandler(sectorWindowClosed);
 			_sectorWindowOpen = true;
 			_sectorWindow.Show();
