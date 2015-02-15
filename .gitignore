@@ -9,6 +9,8 @@ html/
 *.user
 *.sln.docstates
 
+Archive/
+
 # Build results
 
 [Dd]ebug/

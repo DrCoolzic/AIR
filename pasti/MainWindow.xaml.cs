@@ -77,7 +77,7 @@ namespace Pasti {
 
 			SaveFileDialog sfd = new SaveFileDialog();
 			sfd.Filter = "Pasti file|*.stx|All Files|*.*";
-//			askOutput:
+			//			askOutput:
 
 			bool? ok = sfd.ShowDialog();
 			if (ok == true) {
@@ -100,7 +100,7 @@ namespace Pasti {
 				tbStatus.Text = "Invalid track number - please correct and try again";
 			if (Int32.TryParse(tbSide.Text, out sideNumber) == false)
 				tbStatus.Text = "Invalid side number - please correct and try again";
-			
+
 			if ((trackNumber < 0) || (trackNumber > 84) || (sideNumber < 0) || (sideNumber > 1))
 				tbStatus.Text = "Track or Side out of range - please correct and try again";
 			if (_fd == null)
@@ -145,8 +145,90 @@ namespace Pasti {
 			_sectorWindow.Show();
 		}
 
+
 		void sectorWindowClosed(object sender, EventArgs e) {
 			_sectorWindowOpen = false;
+		}
+
+
+		private void btAllSectorsClick(object sender, RoutedEventArgs e) {
+			tbStatus.Clear();
+			if (_fd == null) {
+				tbStatus.Text = "Nothing to display";
+				return;
+			}
+
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.Filter = "Text file|*.txt|All Files|*.*";
+			if (sfd.ShowDialog() == true) {
+				displayAllSectorBuffer(_fd, sfd.FileName);
+			}
+
+
+		}
+
+		public void displayAllSectorBuffer(Floppy floppy, string filename) {
+			StringBuilder sb = new StringBuilder();
+
+			for (int track = 0; track < 84; track++) {
+				for (int side = 0; side < 2; side++) {
+					Track t = floppy.tracks[track, side];
+					if (t == null) continue;
+
+					sb.Append(String.Format("Track {0:D2}.{1} has {2} sectors\n", track, side, t.sectorCount));
+					for (int sect = 0; sect < t.sectorCount; sect++) {
+						sb.Append(String.Format("Sector {0}", t.sectors[sect].id.number));
+						sb.Append(String.Format(" T={0} H={1} N={2} S={3} CRC={4:X4}",
+							t.sectors[sect].id.track, t.sectors[sect].id.side, t.sectors[sect].id.number, t.sectors[sect].id.size, t.sectors[sect].id.crc));
+
+						if (t.sectors[sect].sectorData != null) {
+							sb.Append(String.Format(" has {0} bytes\n", t.sectors[sect].sectorData.Count()));
+							sb.Append(String.Format("       bitPosition {0}, Flags {1:X2}", t.sectors[sect].bitPosition, t.sectors[sect].fdcFlags));
+							sb.Append(String.Format(" {0} {1}\n", ((t.sectors[sect].fdcFlags & SectorDesc.CRC_ERR) == 0) ?
+								"Good CRC" : "Bad CRC", (t.sectors[sect].fuzzyData != null) ? "Has Fuzzy bytes" : ""));
+							saveBuffer(t.sectors[sect].sectorData, sb);
+							if (t.sectors[sect].fuzzyData != null) {
+								sb.Append(String.Format("\nFuzzy bytes for sector {0}\n", t.sectors[sect].fuzzyData.Count()));
+								saveBuffer(t.sectors[sect].fuzzyData, sb);
+							}
+							if (t.sectors[sect].timmingData != null) {
+								sb.Append(String.Format("\nTiming values for sector {0}\n", t.sectors[sect].timmingData.Count()));
+								byte[] timming = new byte[t.sectors[sect].timmingData.Count()];
+								for (int i = 0; i < t.sectors[sect].timmingData.Count(); i++)
+									timming[i] = (byte)t.sectors[sect].timmingData[i];
+								saveBuffer(timming, sb);
+							}
+
+						}
+						else
+							sb.Append(" *** Sector has no data ***\n");
+						sb.Append("\n");
+					}
+				}
+			}
+			using (StreamWriter outputfile = new StreamWriter(filename)) {
+				outputfile.Write(sb.ToString());
+			}
+		}
+
+
+		public void saveBuffer(byte[] buffer, StringBuilder sb) {
+			for (int i = 0; i < buffer.Count(); i += 16) {
+				sb.Append(String.Format("{0:D5}  ", i));
+
+				string ascii = "  ";
+				for (int j = 0; j < 16; j++) {
+					if ((i + j) < buffer.Count()) {
+						sb.Append(String.Format("{0:X2} ", buffer[i + j]));
+						char ch = Convert.ToChar(buffer[i + j]);
+						ascii += Char.IsControl(ch) ? "." : ch.ToString();
+					}
+					else
+						sb.Append(String.Format("   "));
+				}	// one more line
+				sb.Append(ascii);
+				sb.Append(String.Format("\n"));
+			}	// all lines
 		}
 
 	}

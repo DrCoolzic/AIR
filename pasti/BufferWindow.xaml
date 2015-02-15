@@ -6,6 +6,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" >
             <TextBox Name="displayBuffer" Background="Transparent" />
         </ScrollViewer>
- 
+
     </Grid>
 </Window>
+

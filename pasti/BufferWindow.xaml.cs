@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA\n</di
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,14 +70,14 @@ namespace Pasti {
 			displayBuffer.AppendText(String.Format("Track {0:D2}.{1} has {2} sectors\n", track, side, t.sectorCount));
 			for (int sect = 0; sect < t.sectorCount; sect++) {
 				displayBuffer.AppendText(String.Format("Sector {0}", t.sectors[sect].id.number));
-				displayBuffer.AppendText(String.Format(" T={0} H={1} N={2} S={3} CRC={4:X4}", 
+				displayBuffer.AppendText(String.Format(" T={0} H={1} N={2} S={3} CRC={4:X4}",
 					t.sectors[sect].id.track, t.sectors[sect].id.side, t.sectors[sect].id.number, t.sectors[sect].id.size, t.sectors[sect].id.crc));
-				
+
 				if (t.sectors[sect].sectorData != null) {
 					displayBuffer.AppendText(String.Format(" has {0} bytes\n", t.sectors[sect].sectorData.Count()));
 					displayBuffer.AppendText(String.Format("       bitPosition {0}, Flags {1:X2}", t.sectors[sect].bitPosition, t.sectors[sect].fdcFlags));
 					displayBuffer.AppendText(String.Format(" {0} {1}\n", ((t.sectors[sect].fdcFlags & SectorDesc.CRC_ERR) == 0) ?
-						"Good CRC" : "Bad CRC", (t.sectors[sect].fuzzyData != null) ? "Has Fuzzy bytes" : "" ));
+						"Good CRC" : "Bad CRC", (t.sectors[sect].fuzzyData != null) ? "Has Fuzzy bytes" : ""));
 					drawBuffer(t.sectors[sect].sectorData);
 					if (t.sectors[sect].fuzzyData != null) {
 						displayBuffer.AppendText(String.Format("\nFuzzy bytes for sector {0}\n", t.sectors[sect].fuzzyData.Count()));
@@ -97,6 +98,9 @@ namespace Pasti {
 			}
 		}
 
+
+
+
 		/// <summary>
 		/// Display the content of the Track Information in a textbox
 		/// </summary>
@@ -114,7 +118,7 @@ namespace Pasti {
 					track, side, t.byteCount, t.sectors.Count()));
 			if (t.trackData != null)
 				drawBuffer(t.trackData);
-			else 
+			else
 				displayBuffer.AppendText("Track has no Track Image Data Record");
 		}
 

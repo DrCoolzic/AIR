@@ -53,23 +53,30 @@ namespace Pasti {
 	public class Track {
 		/// <summary>Array of Sectors</summary>
 		public Sector[] sectors;
+
 		/// <summary>Number of sectors for this track</summary>
 		public uint sectorCount;
+
 		/// <summary>buffer for the track data if necessary</summary>
 		public byte[] trackData;
+
 		/// <summary>First sync byte offset: This is the offset in byte of the first 0xA1 sync byte found in the track.</summary> 
 		/// <remarks>This is usually the sync byte in front of the first address field.</remarks>
 		public ushort firstSyncOffset;
+
 		/// <summary>Number of bytes in the track</summary>
 		public uint byteCount;
+
 		/// <summary>track number</summary>
 		public uint number;
+
 		/// <summary>track side</summary>
 		public uint side;
 
 		/// <summary>All the sectors of the track follow the Atari standard</summary>
 		/// <remarks>This is used to define if Sector Descriptor are required</remarks>
 		public bool standardSectors = true;
+
 		/// <summary>The track follow the Atari standard</summary>
 		/// <remarks>This is used to define if Track Data is required</remarks>
 		public bool standardTrack = true;

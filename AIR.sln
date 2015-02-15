@@ -1,48 +1,38 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PastiRead", "PastiRead\PastiRead.csproj", "{8BCAAA27-9B02-44EF-8C67-D9EE5A0D19A8}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PastiReadC++", "PastiReadC++\PastiReadC++.vcxproj", "{1A70990B-5BDD-498C-8CAD-775E1729A9E3}"
-EndProject
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB1DF796-879F-4D47-BE90-93F142EC2CE2}"
 	ProjectSection(SolutionItems) = preProject
 		doxygen.css = doxygen.css
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pasti", "pasti\pasti.csproj", "{6C747094-3588-42A3-A868-341CC2148933}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ipf", "ipf\ipf.csproj", "{AA467937-452A-4AE0-AD9D-674EEF0811EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|Mixed Platforms = Debug|Mixed Platforms
-		Debug|Win32 = Debug|Win32
 		Release|Any CPU = Release|Any CPU
-		Release|Mixed Platforms = Release|Mixed Platforms
-		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8BCAAA27-9B02-44EF-8C67-D9EE5A0D19A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BCAAA27-9B02-44EF-8C67-D9EE5A0D19A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8BCAAA27-9B02-44EF-8C67-D9EE5A0D19A8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{8BCAAA27-9B02-44EF-8C67-D9EE5A0D19A8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{8BCAAA27-9B02-44EF-8C67-D9EE5A0D19A8}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{8BCAAA27-9B02-44EF-8C67-D9EE5A0D19A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8BCAAA27-9B02-44EF-8C67-D9EE5A0D19A8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8BCAAA27-9B02-44EF-8C67-D9EE5A0D19A8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{8BCAAA27-9B02-44EF-8C67-D9EE5A0D19A8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{8BCAAA27-9B02-44EF-8C67-D9EE5A0D19A8}.Release|Win32.ActiveCfg = Release|Any CPU
-		{1A70990B-5BDD-498C-8CAD-775E1729A9E3}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{1A70990B-5BDD-498C-8CAD-775E1729A9E3}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{1A70990B-5BDD-498C-8CAD-775E1729A9E3}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{1A70990B-5BDD-498C-8CAD-775E1729A9E3}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1A70990B-5BDD-498C-8CAD-775E1729A9E3}.Debug|Win32.Build.0 = Debug|Win32
-		{1A70990B-5BDD-498C-8CAD-775E1729A9E3}.Release|Any CPU.ActiveCfg = Release|Win32
-		{1A70990B-5BDD-498C-8CAD-775E1729A9E3}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{1A70990B-5BDD-498C-8CAD-775E1729A9E3}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{1A70990B-5BDD-498C-8CAD-775E1729A9E3}.Release|Win32.ActiveCfg = Release|Win32
-		{1A70990B-5BDD-498C-8CAD-775E1729A9E3}.Release|Win32.Build.0 = Release|Win32
+		{6C747094-3588-42A3-A868-341CC2148933}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C747094-3588-42A3-A868-341CC2148933}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C747094-3588-42A3-A868-341CC2148933}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C747094-3588-42A3-A868-341CC2148933}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA467937-452A-4AE0-AD9D-674EEF0811EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA467937-452A-4AE0-AD9D-674EEF0811EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA467937-452A-4AE0-AD9D-674EEF0811EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA467937-452A-4AE0-AD9D-674EEF0811EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6C747094-3588-42A3-A868-341CC2148933} = {EB1DF796-879F-4D47-BE90-93F142EC2CE2}
+		{AA467937-452A-4AE0-AD9D-674EEF0811EB} = {EB1DF796-879F-4D47-BE90-93F142EC2CE2}
 	EndGlobalSection
 EndGlobal
