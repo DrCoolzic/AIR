@@ -1,29 +1,32 @@
 ﻿<Window x:Class="ipf.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="IPF Info" Height="350" Width="525">
-
+        xmlns:jlg="clr-namespace:ipf" 
+        Height="{jlg:SettingBinding Height}" Width="{jlg:SettingBinding Width}" Left="{jlg:SettingBinding Left}" Top="{jlg:SettingBinding Top}"
+        Title="IPF File Reader / Writer V0.1" Closing="mainWinClosing" AllowDrop="True" Drop="fileDropped">
 
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="22"/>
         </Grid.RowDefinitions>
-        <StackPanel  Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Grid.ColumnSpan="2">
+        <StackPanel  Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="1">
             <Button Margin="0,0,5,0" Content="Read IPF File" Width="100" Click="btFileClick" />
             <Button Margin="0,0,5,0" Content="Write IPF File" Width="100" Click="btWriteClick" />
-            <TextBox Name="fileName" Margin="5,0" BorderThickness="0" />
+            <TextBox Name="fileName" Margin="5,0" BorderThickness="0" VerticalContentAlignment="Center" />
         </StackPanel>
-        <TextBox Grid.Row="1" Name="infoBox" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="" VerticalAlignment="Stretch"  VerticalScrollBarVisibility="Auto" Margin="0,5"/>
+        <TextBox Grid.Row="1" Name="infoBox" HorizontalAlignment="Stretch" TextWrapping="NoWrap" Text="" 
+                 VerticalAlignment="Stretch"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="1" 
+                 AllowDrop="True" PreviewDragEnter="dragEnter" PreviewDragOver="dragEnter" PreviewDrop="fileDropped"/>
         <StackPanel  Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Grid.ColumnSpan="2" >
             <Label Content="Track" Padding="0" Width="38" Height="22" HorizontalContentAlignment="Right" Margin="0,0,5,0" />
             <TextBox Name="tbTrack" MinWidth="30" Height="22" Text="00" BorderThickness="0"  />
             <Label Content="Side" Padding="0" Width="38" Height="22" HorizontalContentAlignment="Right" Margin="0,0,5,0" />
             <TextBox Name="tbSide" MinWidth="30" Height="22" Text="0" BorderThickness="0"/>
-            <Button Margin="0,0,5,0" Content="Track content" Width="100" Click="btTrackClick" />
-            <Button Margin="0,0,5,0" Content="Sectors content" Width="100" Click="btSectorsClick" />
-            <TextBox Name="tbStatus" Height="22" BorderThickness="0" />
+            <CheckBox Name="cbDataElem" Content="DataElem" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" IsChecked="{jlg:SettingBinding DataElemChecked}" />
+            <Button Margin="0,0,5,0" Content="Data Blocks" Width="100" Click="btBlocksClick" />
+            <TextBox Name="tbStatus" Width="441"  Height="22" BorderThickness="0" Margin="0,0,10,0" />
         </StackPanel>
     </Grid>
 </Window>

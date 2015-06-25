@@ -61,12 +61,20 @@ namespace Pasti {
 			bool? ok = ofd.ShowDialog();
 			if (ok == true) {
 				fileName.Text = ofd.FileName;
-				PastiReader pasti = new PastiReader(infoBox);
-				_fd = new Floppy();
-				pasti.readPasti(ofd.FileName, _fd);
+				processFile(ofd.FileName);
 			}
 
 		}
+
+
+
+		private void processFile(string file) {
+			PastiReader pasti = new PastiReader(infoBox);
+			_fd = new Floppy();
+			pasti.readPasti(file, _fd);
+		}
+
+
 
 		private void btWriteClick(object sender, RoutedEventArgs e) {
 
@@ -93,6 +101,10 @@ namespace Pasti {
 		}
 
 		private void btTrackClick(object sender, RoutedEventArgs e) {
+			if (_fd == null) {
+				tbStatus.Text = "Nothing to display";
+				return;
+			}
 			int trackNumber;
 			int sideNumber;
 			tbStatus.Clear();
@@ -122,6 +134,10 @@ namespace Pasti {
 
 
 		private void btSectorsClick(object sender, RoutedEventArgs e) {
+			if (_fd == null) {
+				tbStatus.Text = "Nothing to display";
+				return;
+			}
 			int trackNumber;
 			int sideNumber;
 			tbStatus.Clear();
@@ -229,6 +245,22 @@ namespace Pasti {
 				sb.Append(ascii);
 				sb.Append(String.Format("\n"));
 			}	// all lines
+		}
+
+
+		private void fileDrop(object sender, DragEventArgs e) {
+			string[] droppedFiles = null;
+			if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
+				droppedFiles = e.Data.GetData(DataFormats.FileDrop, true) as string[];
+			}
+
+			if ((null == droppedFiles) || (!droppedFiles.Any())) { return; }
+			processFile(droppedFiles[0]);
+		}
+
+
+		private void dragEnter(object sender, DragEventArgs e) {
+			e.Handled = true;
 		}
 
 	}

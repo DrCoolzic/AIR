@@ -88,19 +88,6 @@ namespace Pasti {
 	public class Floppy {
 		/// <summary>Array of Tracks</summary>
 		public Track[,] tracks;
-		/// <summary>Total number of tracks</summary>
-		/// <remarks>Not really needed should be equal to tracks.Length</remarks>
-		//public byte trackCount;
-		/// <summary>Contains Pasti version</summary>
-		/// <remarks>The format uses the upper nibble as major revision and the lower nibble as minor revision. For example 0x32 is version 3.2</remarks>
-		//public byte version;
-		/// <summary>Pasti imaging tool</summary>
-		/// <remarks>The tool used to create the Past image
-		/// - 0x01 Ijor Atari imaging tool
-		/// - 0xCC Ijor Discovery Cartridge based imaging tool
-		/// - 0x10 DrCoolZic Aufit imaging Tool
-		/// - 0xFF Reserved for Test (e.g. tool provided here)</remarks>
-		//public ushort tool;
 	}
 
 }

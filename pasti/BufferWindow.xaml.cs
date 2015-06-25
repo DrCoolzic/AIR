@@ -108,6 +108,7 @@ namespace Pasti {
 		/// <param name="side">Specifies the side from the disk</param>
 		/// <param name="floppy">The floppy disk structure</param>
 		public void displayTrackBuffer(Floppy floppy, int track, int side) {
+			if (floppy == null) return;
 			Track t = floppy.tracks[track, side];
 			displayBuffer.FontFamily = new FontFamily("Consolas");
 			displayBuffer.FontSize = 16;

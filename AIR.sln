@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB1DF796-879F-4D47-BE90-93F142EC2CE2}"
 	ProjectSection(SolutionItems) = preProject
 		doxygen.css = doxygen.css
+		Performance1.psess = Performance1.psess
 		README.md = README.md
 	EndProjectSection
 EndProject

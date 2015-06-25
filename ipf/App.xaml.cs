@@ -11,5 +11,12 @@ namespace ipf {
 	/// Interaction logic for App.xaml
 	/// </summary>
 	public partial class App : Application {
+		// used to save size and position
+		private void Application_Exit(object sender, ExitEventArgs e) {
+			ipf.Properties.Settings.Default.Save();
+		}
+
 	}
+
+
 }

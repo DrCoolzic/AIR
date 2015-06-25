@@ -1,8 +1,8 @@
 ﻿<Window x:Class="Pasti.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Pasti File Reader / Writer 0.8" Height="600" Width="900">
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        Title="Pasti File Reader / Writer 0.8" Height="600" Width="900" AllowDrop="True" Drop="fileDrop">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
@@ -13,7 +13,8 @@
             <Button Margin="0,0,5,0" Content="Write Pasti File" Width="100" Click="btWriteClick" />
             <TextBox Name="fileName" Margin="5,0" BorderThickness="0" />
         </StackPanel>
-        <TextBox Grid.Row="1" Name="infoBox" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="" VerticalAlignment="Stretch"  VerticalScrollBarVisibility="Auto" Margin="0,5"/>
+        <TextBox Grid.Row="1" Name="infoBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalScrollBarVisibility="Auto" Margin="0,5"
+                 TextWrapping="Wrap" Text="" AllowDrop="True" PreviewDragEnter="dragEnter" PreviewDragOver="dragEnter" PreviewDrop="fileDrop" />
         <StackPanel  Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Grid.ColumnSpan="2" >
             <Label Content="Track" Padding="0" Width="38" Height="22" HorizontalContentAlignment="Right" Margin="0,0,5,0" />
             <TextBox Name="tbTrack" MinWidth="30" Height="22" Text="00" BorderThickness="0"  />
