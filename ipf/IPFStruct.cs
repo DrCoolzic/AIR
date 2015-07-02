@@ -57,6 +57,7 @@ namespace ipf {
 		DataInBit = 0x04
 	}
 	
+	// Flags
 	// https://msdn.microsoft.com/fr-fr/library/cc138362.aspx
 	//if ((bd.blockFlags & BlockFlags.BwGap) == BlockFlags.BwGap) {
 	//if (bd.blockFlags.HasFlag(BlockFlags.BwGap)) {
@@ -64,13 +65,13 @@ namespace ipf {
 
 
 	/// <summary>Type of Data in data element</summary>
-	public enum DataType : uint { Unknown, Sync, Data, Gap, Raw, Fuzzy }
+	public enum DataType : uint { Unknown, Sync, Data, IGap, Raw, Fuzzy }
 
 	/// <summary>Type of a gap element</summary>
 	public enum GapType : uint { Unknown, Forward, Backward }
 
 	/// <summary>Type of information in a gap element</summary>
-	public enum GapElemType { Unknown, Gap_Length, Sample_Length }
+	public enum GapElemType { Unknown, GapLength, SampleLength }
 
 	/// <summary>IPF record Header Descriptor</summary>
 	/// <remarks>Each record in IPF file starts with a record header</remarks>
@@ -180,7 +181,9 @@ namespace ipf {
 		}
 	}
 
-
+	/// <summary>
+	/// The image record definition
+	/// </summary>
 	public class ImageRecord {
 		public uint track;
 		public uint side;
@@ -199,7 +202,8 @@ namespace ipf {
 		/// <summary>reserved for future</summary>
 		public uint[] reserved = new uint[3];
 
-
+		/// <summary>Override ToString() to display Image record content</summary>
+		/// <returns>The record header string</returns>
 		public override string ToString() {
 			return String.Format(
 				"   T{0:D2}.{1} Size={2} bytes ({3} bits = Data={4} + Gap={5}) Start Byte={6} Bit={7}\n" +
@@ -210,18 +214,25 @@ namespace ipf {
 	}
 
 
+	/// <summary>
+	/// The Data record definition
+	/// </summary>
 	public class DataRecord {
 		public uint length;
 		public uint bitSize;
 		public uint crc;
 		public uint key;
 		public override string ToString() {
-			return String.Format("== DataKey={0:D3} Size={1} bytes ({2} bits) CRC={3:X8}",
+			return String.Format("== DataKey={0:D3} Length={1} bytes bitSize={2} bits CRC={3:X8}",
 				key, length, bitSize, crc);
 		}
 	}
 
 
+	/// <summary>
+	/// Block descriptor definition
+	/// </summary>
+	/// <remarks>We use explicit position for an equivalent of union in C++</remarks>
 	[StructLayout(LayoutKind.Explicit)]
 	public struct BlockDescriptor {
 		[FieldOffset(0)]

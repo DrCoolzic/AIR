@@ -104,7 +104,7 @@ namespace ipf {
 				// Read Record header
 				startPos = currentPos;
 				recordType = readHeader(header, buffer, ref currentPos);
-				crc = Utilities.crcRecordHeader(buffer, startPos, header.length);
+				crc = Utilities.crc32Header(buffer, startPos, header.length);
 				displayHeader(header, startPos, crc);
 				if (crc != header.crc) return false;
 
@@ -122,6 +122,7 @@ namespace ipf {
 							return false;
 						}
 						readInfoRecord(info, buffer, ref currentPos);
+						fd.info = info;
 						_infoBox.AppendText(info.ToString());
 						break;
 
@@ -133,7 +134,7 @@ namespace ipf {
 
 					case "DATA":
 						DataRecord data = readDataRecord(buffer, ref currentPos);
-						crc = Utilities.crcRecord(buffer, currentPos, data.length);
+						crc = Utilities.crc32Buffer(buffer, currentPos, data.length);
 						if (!images.ContainsKey(data.key)) {
 							_infoBox.AppendText("IPF file error: No matching image key in Data record");
 							return false;
@@ -172,9 +173,6 @@ namespace ipf {
 		}
 
 
-
-
-
 		private static string readHeader(RecordHeader record, byte[] buffer, ref uint currentPos) {
 			record.type[0] = readChar(buffer, ref currentPos);
 			record.type[1] = readChar(buffer, ref currentPos);
@@ -184,6 +182,7 @@ namespace ipf {
 			record.crc = readUInt32(buffer, ref currentPos);
 			return new string(record.type);
 		}
+
 
 		private void displayHeader(RecordHeader record, uint startPos, uint crc) {
 			_infoBox.AppendText(record.ToString());
@@ -233,12 +232,15 @@ namespace ipf {
 			for (int i = 0; i < 3; i++)
 				image.reserved[i] = readUInt32(buffer, ref bpos);
 
+			Debug.Assert(image.trackBits == (image.dataBits + image.gapBits), "Track bit does not equal dataBits + GapBits");
+			Debug.Assert(image.startBytePos == (image.startBitPos / 8), "StratByte does not equal StratBit rounded");
+
 			Track track = new Track();
-			track.trackBytes = image.trackBytes / 2;
+			track.trackBytes = image.trackBytes;
 			track.density = image.density;
-			track.startPos = image.startBytePos / 2;
-			track.dataBytes = image.dataBits / 16;
-			track.gapBytes = image.gapBits / 16;
+			track.startBitPos = image.startBitPos;
+			track.dataBits = image.dataBits;
+			track.gapBits = image.gapBits;
 			track.blockCount = image.blockCount;
 			track.trackFlags = image.trackFlags;
 			fd.tracks[image.track, image.side] = track;
@@ -280,8 +282,9 @@ namespace ipf {
 				BlockDescriptor bd = readBlockDescriptor(buffer, ref currentPos);
 
 				Sector sector = new Sector();
-				sector.dataBytes = bd.dataBits / 16;
-				sector.gapBytes = bd.gapBits / 16;
+				sector.dataBits = bd.dataBits;
+				sector.gapBits = bd.gapBits;
+				sector.flags = bd.blockFlags;
 
 				string bdString = null;
 				switch (ipfEncoder) {
@@ -296,7 +299,6 @@ namespace ipf {
 						break;
 				}
 				dataString.Append(String.Format("{0} ({1}-{2})\n", bdString, startPos, currentPos - 1));
-
 				
 				// read GAP elements
 				if ((ipfEncoder == EncoderType.SPS) && (bd.gapBits > 0)) {
@@ -304,13 +306,13 @@ namespace ipf {
 					uint gapBitsSpecified = 0;
 					byte gapHead;
 					if (_dataElem.IsChecked == true)
-						dataString.Append(String.Format("   --- GAP --- {0} bits {1} bytes @{2}\n",
-							bd.gapBits, bd.gapBits / 16, gapPos));
+						dataString.Append(String.Format("   --- GAP --- {0} bits @{1}\n",
+							bd.gapBits, gapPos));
 
-					//if ((bd.blockFlags & BlockFlags.FwGap) == BlockFlags.FwGap) {
 					if (bd.blockFlags.HasFlag(BlockFlags.FwGap)) {
 						uint gapBytes = 0;
 						while ((gapHead = buffer[gapPos++]) != 0) {
+							uint startGapElemPos = gapPos - 1;
 							GapElement gap;
 							uint gapSize = 0;
 							int gapSizeWidth = gapHead >> 5;
@@ -320,9 +322,9 @@ namespace ipf {
 							}
 							if (_dataElem.IsChecked == true)
 								if (_dataElem.IsChecked == true)
-									dataString.Append(String.Format("   Forward W={0} {1} {2} bits ({3} bytes)",
-										gapSizeWidth, gapType.ToString(), gapSize, gapSize / 8));
-							if (gapType == GapElemType.Sample_Length) {
+									dataString.Append(String.Format("   Forward  GSW={0} {1} {2} bits",
+										gapSizeWidth, gapType.ToString(), gapSize));
+							if (gapType == GapElemType.SampleLength) {
 								List<byte> gapSample = new List<byte>();
 								for (int n = 0; n < gapSize / 8; n++)
 									gapSample.Add(buffer[gapPos++]);
@@ -341,14 +343,14 @@ namespace ipf {
 								gapBitsSpecified += gapSize;
 								gapBytes = gapSize / 8;
 							}
-							if (_dataElem.IsChecked == true) dataString.Append(String.Format(" @{0}\n", gapPos));							
+							if (_dataElem.IsChecked == true) dataString.Append(String.Format(" @{0}\n", startGapElemPos));							
 						}						
 					}	// forward
 
-					//if ((bd.blockFlags & BlockFlags.BwGap) == BlockFlags.BwGap) {
 					if (bd.blockFlags.HasFlag(BlockFlags.BwGap)) {
 						uint gapBytes = 0;
 						while ((gapHead = buffer[gapPos++]) != 0) {
+							uint startGapElemPos = gapPos - 1;
 							GapElement gap;
 							uint gapSize = 0;
 							int gapSizeWidth = gapHead >> 5;
@@ -357,9 +359,9 @@ namespace ipf {
 								gapSize = (gapSize << 8) + buffer[gapPos++];
 							}
 							if (_dataElem.IsChecked == true) 
-								dataString.Append(String.Format("   Backward W={0} {1} {2} bits ({3} bytes)",
-									gapSizeWidth, gapType.ToString(), gapSize, gapSize / 8));
-							if (gapType == GapElemType.Sample_Length) {
+								dataString.Append(String.Format("   Backward GSW={0} {1} {2} bits",
+									gapSizeWidth, gapType.ToString(), gapSize));
+							if (gapType == GapElemType.SampleLength) {
 								List<byte> gapSample = new List<byte>();
 								for (int n = 0; n < gapSize / 8; n++)
 									gapSample.Add(buffer[gapPos++]);
@@ -378,14 +380,17 @@ namespace ipf {
 								gapBytes = gapSize / 8;
 								gapBitsSpecified += gapSize;								
 							}
-							if (_dataElem.IsChecked == true) dataString.Append(String.Format(" @{0}\n", gapPos));						
+							if (_dataElem.IsChecked == true) dataString.Append(String.Format(" @{0}\n", startGapElemPos));						
 						}
 					}	// backward
 
-					if (gapBitsSpecified * 2 != bd.gapBits)
-						if (_dataElem.IsChecked == true)
-							dataString.Append(String.Format("   Incomplete specification {0} bits out of {1}\n",
+					if (_dataElem.IsChecked == true) {
+						if (gapBitsSpecified * 2 != bd.gapBits)
+							dataString.Append(String.Format("   Incomplete gap specification {0} bits out of {1}\n",
 								gapBitsSpecified * 2, bd.gapBits));
+						else
+							dataString.Append(String.Format("   complete gap specification {0} bits\n", bd.gapBits));
+					}
 				}	// GAP elements exist
 
 				// read data elements
@@ -393,8 +398,8 @@ namespace ipf {
 					uint dataPos = startDataArea + bd.dataOffset;
 					byte dataHead;
 					if (_dataElem.IsChecked == true)
-						dataString.Append(String.Format("   --- DATA --- {0} bits {1} bytes @{2}\n",
-							bd.dataBits, bd.dataBits / 16, dataPos));
+						dataString.Append(String.Format("   --- DATA --- {0} bits @{1}\n",
+							bd.dataBits, dataPos));
 					while ((dataHead = buffer[dataPos++]) != 0) {
 						DataElem data = new DataElem();
 						uint dataSize = 0;
@@ -403,16 +408,18 @@ namespace ipf {
 						for (int n = 0; n < dataSizeWidth; n++) {
 							dataSize = (dataSize << 8) + buffer[dataPos++];
 						}
-						if ((bd.blockFlags & BlockFlags.DataInBit) == BlockFlags.DataInBit) {
+
+						if (bd.blockFlags.HasFlag(BlockFlags.DataInBit)) {
 							if (_dataElem.IsChecked == true)
-								dataString.Append(String.Format("   {0} W={1} (in bit) {2} bits ({3} bytes) @{4}",
-									dataType.ToString(), dataSizeWidth, dataSize, dataSize / 8, dataPos));
+								dataString.Append(String.Format("   {0} DSW={1} sample {2} bits @{3}",
+									dataType.ToString(), dataSizeWidth, dataSize, dataPos));
 						}
 						else {
-							dataSize *= 8;
-							if (_dataElem.IsChecked == true)
-								dataString.Append(String.Format("   {0} W={1} (in bytes) {2} bits ({3} bytes) @{4}",
-									dataType.ToString(), dataSizeWidth, dataSize, dataSize / 8, dataPos));
+
+							if (_dataElem.IsChecked == true) {
+								dataString.Append(String.Format("   {0} DSW={1} sample {2} bytes @{3}",
+									dataType.ToString(), dataSizeWidth, dataSize, dataPos));
+							dataSize *= 8;							}
 						}
 
 						List<byte> dataSample = new List<byte>();
@@ -443,7 +450,6 @@ namespace ipf {
 				ctei.reserved[i] = readUInt32(buffer, ref bpos);
 			return ctei;
 		}
-
 
 
 		private static CtexRecord readCtexRecord(byte[] buffer, ref uint bpos) {

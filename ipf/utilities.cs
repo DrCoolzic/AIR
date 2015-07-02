@@ -78,17 +78,17 @@ namespace ipf {
 	};
 
 
-	public static uint crcRecordHeader(byte[] buf, uint start, uint len) {
+	public static uint crc32Header(byte[] buf, uint start, uint len) {
 		uint crc = 0;
 		crc = ~crc;
 		if ((start + len) > buf.Count()) return crc;
-
+		// the content of bytes 8, 9, 10, 11 are set to zero when computing the CRC
 		for (uint i = 0; i < len; i++)
 			crc = crc32_tab[(crc ^ (((i > 7) && (i < 12)) ? 0 : buf[start + i]) ) & 0xff] ^ (crc >> 8);
 		return ~crc;
 	}
 
-	public static uint crcRecord(byte[] buf, uint start, uint len) {
+	public static uint crc32Buffer(byte[] buf, uint start, uint len) {
 		uint crc = 0;
 		if (len == 0) return 0;
 		crc = ~crc;
@@ -97,33 +97,26 @@ namespace ipf {
 		return ~crc;
 	}
 
+	public static uint crc32Buffer(List<byte> buf, int start, int len) {
+		uint crc = 0;
+		if (len == 0) return 0;
+		crc = ~crc;
+		for (int i = 0; i < len; i++)
+			crc = crc32_tab[(crc ^ buf[(int)start + i]) & 0xff] ^ (crc >> 8);
+		return ~crc;
+	}
+
 
 	public static uint crc32(uint crc, byte c) {
 		return ~crc32_tab[(~crc ^ c) & 0xff] ^ (~crc >> 8);
 	}
 
-	public static uint crcRecordH(List<byte> buf, int start, int len) {
-		uint crc = 0;
-		crc = ~crc;
-		 //if ((start + len) > buf.Count()) return crc;
 
-		for (int i = 0; i < len; i++)
-			crc = crc32_tab[(crc ^ (((i > 7) && (i < 12)) ? 0 : buf[start + i])) & 0xff] ^ (crc >> 8);
-		return ~crc;
-	}
-
-
-
-
-	//uint16_t crc16(const uint8_t* byte, uint16_t crc) {
-	//	for (int i = 0 ; i < 8 ; i++)
-	//		crc = (crc << 1) ^ ((((crc >> 8) ^ (*byte << i)) & 0x0080) ? 0x1021 : 0);
-	//	return crc;
-	//} /* end of update crc16 */
-
-
-
-
+	public static ushort crc16(ushort crc, byte b) {
+		for (int i = 0 ; i < 8 ; i++)
+			crc = (ushort)((crc << 1) ^ (((((crc >> 8) ^ (b << i)) & 0x0080) != 0) ? 0x1021 : 0));
+		return crc;
+	} /* end of crc16 */
 
 	}
 

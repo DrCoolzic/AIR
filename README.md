@@ -1,17 +1,17 @@
 AIR
 ===
-Atari Image Reader
+Atari Image File Reader
 
-A set of tools that demonstrate how to read several Atari Image file formats
+A collection of tools that demonstrate how to read (as well as how to write) several 
+Atari Image file formats. Code is public domain.
 
-Developed in C# and C++
+The tools are developed in C#
 
-- Pasti File format Reader in C#
-- Pasti File format Reader in C++
+- Pasti File format Reader/Writer 
+- IPF File format Reader/Writer
 
 
-
-The Atari Image Reader project is free software; you can redistribute it
+The Atari Image file Reader/Writer project is free software; you can redistribute it
 and/or modify  it under the terms of the GNU General Public License
 as published by the Free Software Foundation; either version 3
 of the License, or (at your option) any later version.

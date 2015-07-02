@@ -47,14 +47,14 @@ namespace ipf {
 				foreach (DataElem data in s.dataElems)
 					dataSum += (data.type == DataType.Sync) ? (data.dataBytes / 2) : data.dataBytes;
 				displayBuffer.AppendText(String.Format("Sector {0} Total={1} bytes (Gap={2} Data={3}) in Block Descriptor: (Gap={4} Data={5})\n", 
-					sect, gapSum + dataSum, gapSum, dataSum, s.gapBytes, s.dataBytes));
+					sect, gapSum + dataSum, gapSum, dataSum, s.gapBits * 8, s.dataBits * 8));
 
 				foreach (GapElement gap in s.gapElems) {
 					displayBuffer.AppendText(String.Format("   - {0} Gap {1} Value={2:X2}\n",
 						(gap.type == GapType.Forward) ? "Forward" : "Backward", (gap.gapBytes == 0) ? "Repeat" : gap.gapBytes.ToString() + " bytes", gap.value));
 				}
-				if (gapSum != s.gapBytes)
-					displayBuffer.AppendText(String.Format("   = Gap filling required: only {0} bytes specified out of {1}\n", gapSum, s.gapBytes));
+				if (gapSum != (s.gapBits * 8))
+					displayBuffer.AppendText(String.Format("   = Gap filling required: only {0} bytes specified out of {1}\n", gapSum, s.gapBits * 8));
 
 				foreach (DataElem data in s.dataElems) {
 					displayBuffer.AppendText(String.Format("   + {0} {1} bytes\n",
