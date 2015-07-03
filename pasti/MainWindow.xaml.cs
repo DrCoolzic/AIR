@@ -53,6 +53,10 @@ namespace Pasti {
 
 		public MainWindow() {
 			InitializeComponent();
+			string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+			string progName = "Pasti STX File Reader-Writer " + version;
+			Title = progName;
+
 		}
 
 		private void btFileClick(object sender, RoutedEventArgs e) {

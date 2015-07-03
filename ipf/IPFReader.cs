@@ -322,8 +322,8 @@ namespace ipf {
 							}
 							if (_dataElem.IsChecked == true)
 								if (_dataElem.IsChecked == true)
-									dataString.Append(String.Format("   Forward  GSW={0} {1} {2} bits",
-										gapSizeWidth, gapType.ToString(), gapSize));
+									dataString.Append(String.Format("   Forward  GSW={0} {1} {2} bits ({3} bytes)",
+										gapSizeWidth, gapType.ToString(), gapSize, gapSize / 8));
 							if (gapType == GapElemType.SampleLength) {
 								List<byte> gapSample = new List<byte>();
 								for (int n = 0; n < gapSize / 8; n++)
@@ -359,8 +359,8 @@ namespace ipf {
 								gapSize = (gapSize << 8) + buffer[gapPos++];
 							}
 							if (_dataElem.IsChecked == true) 
-								dataString.Append(String.Format("   Backward GSW={0} {1} {2} bits",
-									gapSizeWidth, gapType.ToString(), gapSize));
+								dataString.Append(String.Format("   Backward GSW={0} {1} {2} bits ({3} bytes)",
+									gapSizeWidth, gapType.ToString(), gapSize, gapSize / 8));
 							if (gapType == GapElemType.SampleLength) {
 								List<byte> gapSample = new List<byte>();
 								for (int n = 0; n < gapSize / 8; n++)
