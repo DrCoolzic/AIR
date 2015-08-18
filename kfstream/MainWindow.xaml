@@ -1,0 +1,25 @@
+﻿<Window x:Class="KFStream.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="600" Width="900" AllowDrop="True" Drop="fileDrop">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel  Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="5">
+            <Button Margin="0,0,5,0" Content="Read Raw File" Width="100" Click="btReadClick" />
+            <Button Margin="0,0,5,0" Content="Write Raw File" Width="100" Click="btWriteClick" />
+            <TextBox Name="fileName" Margin="5,0" BorderThickness="0" />
+        </StackPanel>
+        <TextBox Grid.Row="1" Name="infoBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  VerticalScrollBarVisibility="Auto" 
+                 TextWrapping="Wrap" Text="" AllowDrop="True" PreviewDragEnter="dragEnter" PreviewDragOver="dragEnter" PreviewDrop="fileDrop" />
+        <StackPanel  Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="5">
+            <Label Content="Revolution:" Padding="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+            <TextBox Name="tbRev" Text="1" Width="40" BorderThickness="0"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Padding="5,0,15,0"/>
+            <Button Content="Transitions" Width="100" Click="btTransitions" />
+            <TextBox Name="tbStatus" HorizontalAlignment="Stretch" Padding="10,0,0,0" BorderThickness="0"/>        
+        </StackPanel>
+    </Grid>
+</Window>

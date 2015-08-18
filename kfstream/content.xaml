@@ -1,0 +1,10 @@
+﻿<Window x:Class="KFStream.ContentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Transitions Display" Height="400" Width="850">
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" >
+            <TextBox Name="displayBuffer" Background="Transparent" />
+        </ScrollViewer>
+    </Grid>
+</Window>

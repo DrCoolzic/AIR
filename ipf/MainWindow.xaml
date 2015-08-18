@@ -9,24 +9,28 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="22"/>
+            <RowDefinition Height="24"/>
         </Grid.RowDefinitions>
         <StackPanel  Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="1">
+            <Button Margin="0,0,5,0" Width="24" Click="btUpdateClick" HorizontalAlignment="Right">
+                <Button.Content><Image Source="update.png" /></Button.Content>
+            </Button>
             <Button Margin="0,0,5,0" Content="Read IPF File" Width="100" Click="btFileClick" />
             <Button Margin="0,0,5,0" Content="Write IPF File" Width="100" Click="btWriteClick" />
-            <TextBox Name="fileName" Margin="5,0" BorderThickness="0" VerticalContentAlignment="Center" />
+            
+            <TextBox Name="fileName" Margin="5,0" BorderThickness="0" VerticalContentAlignment="Center"/>
         </StackPanel>
         <TextBox Grid.Row="1" Name="infoBox" HorizontalAlignment="Stretch" TextWrapping="NoWrap" Text="" 
                  VerticalAlignment="Stretch"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="1" 
                  AllowDrop="True" PreviewDragEnter="dragEnter" PreviewDragOver="dragEnter" PreviewDrop="fileDropped"/>
         <StackPanel  Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Grid.ColumnSpan="2" >
-            <Label Content="Track" Padding="0" Width="38" Height="22" HorizontalContentAlignment="Right" Margin="0,0,5,0" />
-            <TextBox Name="tbTrack" MinWidth="30" Height="22" Text="00" BorderThickness="0"  />
-            <Label Content="Side" Padding="0" Width="38" Height="22" HorizontalContentAlignment="Right" Margin="0,0,5,0" />
-            <TextBox Name="tbSide" MinWidth="30" Height="22" Text="0" BorderThickness="0"/>
+            <Label Content="Track" Padding="0" Width="38" Height="24" HorizontalContentAlignment="Right" Margin="0,0,5,0" />
+            <TextBox Name="tbTrack" MinWidth="30" Height="24" Text="00" BorderThickness="0"  />
+            <Label Content="Side" Padding="0" Width="38" Height="24" HorizontalContentAlignment="Right" Margin="0,0,5,0" />
+            <TextBox Name="tbSide" MinWidth="30" Height="24" Text="0" BorderThickness="0"/>
             <CheckBox Name="cbDataElem" Content="DataElem" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" IsChecked="{jlg:SettingBinding DataElemChecked}" />
             <Button Margin="0,0,5,0" Content="Data Blocks" Width="100" Click="btBlocksClick" />
-            <TextBox Name="tbStatus" Width="441"  Height="22" BorderThickness="0" Margin="0,0,10,0" />
+            <TextBox Name="tbStatus" Width="441"  Height="24" BorderThickness="0" Margin="0,0,10,0" />
         </StackPanel>
     </Grid>
 </Window>

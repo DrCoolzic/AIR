@@ -306,8 +306,8 @@ namespace ipf {
 					uint gapBitsSpecified = 0;
 					byte gapHead;
 					if (_dataElem.IsChecked == true)
-						dataString.Append(String.Format("   --- GAP --- {0} bits @{1}\n",
-							bd.gapBits, gapPos));
+						dataString.Append(String.Format("   --- GAP --- {0} bits ({1} bytes) @{2}\n",
+							bd.gapBits, bd.gapBits / 8, gapPos));
 
 					if (bd.blockFlags.HasFlag(BlockFlags.FwGap)) {
 						uint gapBytes = 0;
@@ -398,8 +398,8 @@ namespace ipf {
 					uint dataPos = startDataArea + bd.dataOffset;
 					byte dataHead;
 					if (_dataElem.IsChecked == true)
-						dataString.Append(String.Format("   --- DATA --- {0} bits @{1}\n",
-							bd.dataBits, dataPos));
+						dataString.Append(String.Format("   --- DATA --- {0} bits ({1} bytes) @{2}\n",
+							bd.dataBits, bd.dataBits / 8, dataPos));
 					while ((dataHead = buffer[dataPos++]) != 0) {
 						DataElem data = new DataElem();
 						uint dataSize = 0;

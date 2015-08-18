@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB1DF796-879F-4D47-BE90-93F142EC2CE2}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pasti", "pasti\pasti.csproj", "{6C747094-3588-42A3-A868-341CC2148933}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ipf", "ipf\ipf.csproj", "{AA467937-452A-4AE0-AD9D-674EEF0811EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kfstream", "kfstream\kfstream.csproj", "{19A3C77B-31CD-4F12-AC49-E88161D73A70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{AA467937-452A-4AE0-AD9D-674EEF0811EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA467937-452A-4AE0-AD9D-674EEF0811EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA467937-452A-4AE0-AD9D-674EEF0811EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19A3C77B-31CD-4F12-AC49-E88161D73A70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19A3C77B-31CD-4F12-AC49-E88161D73A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19A3C77B-31CD-4F12-AC49-E88161D73A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19A3C77B-31CD-4F12-AC49-E88161D73A70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -34,5 +40,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6C747094-3588-42A3-A868-341CC2148933} = {EB1DF796-879F-4D47-BE90-93F142EC2CE2}
 		{AA467937-452A-4AE0-AD9D-674EEF0811EB} = {EB1DF796-879F-4D47-BE90-93F142EC2CE2}
+		{19A3C77B-31CD-4F12-AC49-E88161D73A70} = {EB1DF796-879F-4D47-BE90-93F142EC2CE2}
 	EndGlobalSection
 EndGlobal

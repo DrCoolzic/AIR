@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Deployment.Application;
 
 namespace ipf {
 	//http://www.thomaslevesque.com/2008/11/18/wpf-binding-to-application-settings-using-a-markup-extension/
@@ -50,6 +51,64 @@ namespace ipf {
 			//tbVersion.Text = progName;
 		}
 
+		private bool checkForUpdate(bool showMessage) {
+			bool doUpdate = false;
+			UpdateCheckInfo info = null;
+
+			if (ApplicationDeployment.IsNetworkDeployed) {
+				ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
+
+				try {
+					info = ad.CheckForDetailedUpdate();
+				}
+				catch (DeploymentDownloadException dde) {
+					MessageBox.Show("A new version of the application cannot be downloaded at this time. \n\nPlease check your network connection, or try again later. Error: " + dde.Message);
+					return false;
+				}
+				catch (InvalidDeploymentException ide) {
+					MessageBox.Show("Cannot check for a new version of the application. The ClickOnce deployment is corrupt. Please redeploy the application and try again. Error: " + ide.Message);
+					return false;
+				}
+				catch (InvalidOperationException ioe) {
+					MessageBox.Show("This application cannot be updated. It is likely not a ClickOnce application. Error: " + ioe.Message);
+					return false;
+				}
+
+				if (info.UpdateAvailable) {
+					doUpdate = true;
+					if (showMessage) {
+						MessageBoxResult result = MessageBox.Show(
+							"An update is available. Would you like to update the application now?",
+							"Update Available", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK);
+						if (result != MessageBoxResult.OK)
+							doUpdate = false;
+					}
+				}
+				else
+					if (showMessage) MessageBox.Show("No Update Available at this time");
+
+			}	// network deployed
+			else
+				MessageBox.Show("This application is not a ClickOnce application");
+			return doUpdate;
+		}
+
+
+		private void InstallUpdate() {
+			ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
+			try {
+				ad.Update();
+				MessageBox.Show("The application has been updated and will be restarted");
+				//System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
+				String ApplicationEntryPoint = ApplicationDeployment.CurrentDeployment.UpdatedApplicationFullName;
+				System.Diagnostics.Process.Start(ApplicationEntryPoint);
+				Application.Current.Shutdown();
+			}
+			catch (DeploymentDownloadException dde) {
+				MessageBox.Show("Cannot install the latest version of the application. \n\nPlease check your network connection, or try again later. Error: " + dde);
+				return;
+			}
+		}
 
 
 		private void btFileClick(object sender, RoutedEventArgs e) {
@@ -59,8 +118,7 @@ namespace ipf {
 			if (ok == true) {
 				fileName.Text = ofd.FileName;
 				processFile(ofd.FileName);
-			}
-			
+			}			
 		}
 
 
@@ -148,8 +206,16 @@ namespace ipf {
 			processFile(droppedFiles[0]);
 		}
 
+
 		private void dragEnter(object sender, DragEventArgs e) {
 			e.Handled = true;
+		}
+
+
+		private void btUpdateClick(object sender, RoutedEventArgs e) {
+			bool update = checkForUpdate(true);
+			if (update)
+				InstallUpdate();
 		}
 
 	}
