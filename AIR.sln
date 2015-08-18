@@ -9,11 +9,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pasti", "pasti\pasti.csproj", "{6C747094-3588-42A3-A868-341CC2148933}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pasti", "pasti\Pasti.csproj", "{6C747094-3588-42A3-A868-341CC2148933}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ipf", "ipf\ipf.csproj", "{AA467937-452A-4AE0-AD9D-674EEF0811EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPF", "ipf\IPF.csproj", "{AA467937-452A-4AE0-AD9D-674EEF0811EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kfstream", "kfstream\kfstream.csproj", "{19A3C77B-31CD-4F12-AC49-E88161D73A70}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KFStream", "kfstream\KFStream.csproj", "{19A3C77B-31CD-4F12-AC49-E88161D73A70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

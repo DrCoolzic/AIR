@@ -58,7 +58,7 @@ with a simple check regardless of the current stream alignment.
 .
 
 For more information please read the "KryoFlux Stream File Documentation"
-http://info-coach.fr/atari/software/projects/_kryoflux/kryoflux_stream_protocol.pdf
+http://info-coach.fr/atari/documents/_mydoc/kryoflux_stream_protocol.pdf
 
 @author original code provided by the Software Preservation Society
 @author Extensively modified by Jean Louis-Guerin
@@ -73,7 +73,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KFReaderPackage {
+namespace KFStreamPackage {
 
 #region structures
 	/// <summary>Define the Status codes returned by Stream decoding procedures</summary>
@@ -280,7 +280,7 @@ public class KFReader {
 	/// in one string that you can access with this function. Each information is stored as 
 	/// a "name=value" pair and is separated from the previous one with a coma "," character.
 	/// For example "sck=24027428.5714285,". For more information please refer to the 
-	/// http://info-coach.fr/atari/software/projects/_kryoflux/kryoflux_stream_protocol.pdf
+	/// http://info-coach.fr/atari/documents/_mydoc/kryoflux_stream_protocol.pdf
 	/// document.\n
 	/// To find a specific name=value pair in the InfoString you can use the @ref findName() 
 	/// function</remarks>

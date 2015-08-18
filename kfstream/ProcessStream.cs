@@ -33,9 +33,9 @@ using System.Windows;
 using System.Windows.Controls;
 
 using KFStream;
-using KFReaderPackage;
+using KFStreamPackage;
 
-namespace KFReaderPackage {
+namespace KFStreamPackage {
 
 	/// <summary>
 	/// The FluxData structure contains the flux transition information

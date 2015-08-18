@@ -14,6 +14,7 @@ The programs have a nice WPF (Windows Presentation Foundation) Graphical User In
 Currently the AIR project is composed of
 - Pasti File format Reader-Writer 
 - IPF File format Reader-Writer
+- KryoFlux Raw stream file Reader-Writer
 
 The Atari Image file Reader/Writer project is free software; you can redistribute it
 and/or modify  it under the terms of the GNU General Public License
@@ -22,4 +23,8 @@ of the License, or (at your option) any later version.
 https://gnu.org/licenses/gpl.html
 
 The different Atari image file formats are described in my Atari FD Image Format page http://info-coach.fr/atari/software/Images-formats.php
+- Atari Standard Image File Formats http://info-coach.fr/atari/documents/_mydoc/FD_Image_File_Format.pdf
+- Interchangeable Preservation Format (IPF) Documentation http://info-coach.fr/atari/documents/_mydoc/IPF-Documentation.pdf
+- Pasti File (STX) Documentation http://info-coach.fr/atari/documents/_mydoc/Pasti-documentation.pdf
+- Kryoflux Raw Stream File Documentation http://info-coach.fr/atari/documents/_mydoc/kryoflux_stream_protocol.pdf
 Specific documentations can be downloaded from Atari Documentation from DrCoolZic page http://info-coach.fr/atari/documents/myDoc.php

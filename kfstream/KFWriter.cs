@@ -6,10 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-using KFReaderPackage;
+using KFStreamPackage;
 using System.Globalization;
 
-namespace KFReaderPackage {
+namespace KFStreamPackage {
 
 	class KFWriter {
 		double _sckValue;
