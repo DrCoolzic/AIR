@@ -45,10 +45,11 @@ namespace ipf {
 
 		public MainWindow() {
 			InitializeComponent();
-			string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-			string progName = "IPF File Reader / Writer " + version;
-			Title = progName;
-			//tbVersion.Text = progName;
+			Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+			DateTime dateTimeOfBuild = new DateTime(2000, 1, 1)
+								+ new TimeSpan(version.Build, 0, 0, 0)
+								+ TimeSpan.FromSeconds(version.Revision * 2);
+			Title = "IPF File Reader / Writer " + version.Major + "." + version.Minor + " - " + dateTimeOfBuild;
 		}
 
 		private bool checkForUpdate(bool showMessage) {
@@ -115,14 +116,14 @@ namespace ipf {
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.Filter = "IPF/IPX file|*.ipf;*ipx|All Files|*.*";
 			bool? ok = ofd.ShowDialog();
-			if (ok == true) {
-				fileName.Text = ofd.FileName;
+			if (ok == true) {				
 				processFile(ofd.FileName);
 			}			
 		}
 
 
 		private void processFile(string file) {
+			fileName.Text = file;
 			IPFReader ipf = new IPFReader(infoBox, cbDataElem);
 			_fd = new Floppy();
 			ipf.readIPF(file, _fd);

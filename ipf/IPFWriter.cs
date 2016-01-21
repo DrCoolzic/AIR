@@ -130,6 +130,7 @@ namespace ipf {
 			for (uint track = 0; track < 84; track++) {
 				for (uint side = 0; side < 2; side++) {
 					Track t = fd.tracks[track, side];
+					if (t == null) continue;
 
 					ImageRecord image = new ImageRecord();
 					image.track = track;
@@ -184,6 +185,7 @@ namespace ipf {
 			for (uint track = 0; track < 84; track++) {
 				for (uint side = 0; side < 2; side++) {
 					Track t = fd.tracks[track, side];
+					if (t == null) continue;
 
 					start = buffer.Count;
 					writeByte(buffer, (byte)'D');			// File header
@@ -327,7 +329,7 @@ namespace ipf {
 				writeByte(buffer, (byte)(byteCount & 0xFF));
 			}
 			// Write value
-			Debug.Assert(byteCount == value.Count, "Lenght error in dataElem");
+			Debug.Assert(byteCount == value.Count, "Length error in dataElem");
 			for (int i = 0; i < byteCount; i++) {
 				writeByte(buffer, value[i]);
 			}

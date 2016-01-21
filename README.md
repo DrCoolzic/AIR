@@ -27,4 +27,5 @@ The different Atari image file formats are described in my Atari FD Image Format
 - Interchangeable Preservation Format (IPF) Documentation http://info-coach.fr/atari/documents/_mydoc/IPF-Documentation.pdf
 - Pasti File (STX) Documentation http://info-coach.fr/atari/documents/_mydoc/Pasti-documentation.pdf
 - Kryoflux Raw Stream File Documentation http://info-coach.fr/atari/documents/_mydoc/kryoflux_stream_protocol.pdf
+
 Specific documentations can be downloaded from Atari Documentation from DrCoolZic page http://info-coach.fr/atari/documents/myDoc.php

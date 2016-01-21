@@ -127,7 +127,7 @@ namespace Pasti {
 		/// <returns>The string</returns>
 		public override string ToString() {
 			//return base.ToString();
-			return String.Format("Track {0:D2}.{1:D1} {2} bytes {3} sect FuzBytes={4} Flag={5:X2} {6} {7} RecSize={8}",
+			return String.Format("Track {0:D2}.{1:D1} {2} bytes {3} sect FuzyBytes={4} Flag={5:X2} {6} {7} RecSize={8}",
 				trackNumber & 0x7F, (trackNumber & 0x80) >> 7, trackLength, sectorCount, (fuzzyCount == 0) ? "No" : String.Format("{0}", fuzzyCount), trackFlags,
 				((trackFlags & TRK_IMAGE)) != 0 ? "TImage" : "", 
 				((trackFlags & TRK_SECT_DESC)) != 0 ? "SDesc" : "", recordSize);

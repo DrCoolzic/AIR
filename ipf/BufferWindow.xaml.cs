@@ -59,7 +59,8 @@ namespace ipf {
 				foreach (DataElem data in s.dataElems) {
 					displayBuffer.AppendText(String.Format("   + {0} {1} bytes\n",
 						data.type.ToString(), (data.type == DataType.Sync) ? (data.dataBytes / 2) : data.dataBytes));
-					drawBuffer(data.value, data.type == DataType.Sync);
+					if (data.type != DataType.Fuzzy)
+						drawBuffer(data.value, data.type == DataType.Sync);
 				}
 				trackDataSum += dataSum;
 				trackGapSum += gapSum;

@@ -53,28 +53,29 @@ namespace Pasti {
 
 		public MainWindow() {
 			InitializeComponent();
-			string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-			string progName = "Pasti STX File Reader-Writer " + version;
-			Title = progName;
-
+			//string version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+			Version version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+			DateTime dateTimeOfBuild = new DateTime(2000, 1, 1)
+								+ new TimeSpan(version.Build, 0, 0, 0)
+								+ TimeSpan.FromSeconds(version.Revision * 2);
+			Title = "Pasti STX File Reader-Writer " + version.Major + "." + version.Minor + " - " + dateTimeOfBuild;
 		}
+
 
 		private void btFileClick(object sender, RoutedEventArgs e) {
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.Filter = "Pasti file|*.stx|All Files|*.*";
 			bool? ok = ofd.ShowDialog();
 			if (ok == true) {
-				fileName.Text = ofd.FileName;
 				processFile(ofd.FileName);
 			}
-
 		}
-
 
 
 		private void processFile(string file) {
 			PastiReader pasti = new PastiReader(infoBox);
 			_fd = new Floppy();
+			fileName.Text = file;
 			pasti.readPasti(file, _fd);
 		}
 
@@ -187,6 +188,11 @@ namespace Pasti {
 
 		}
 
+		/// <summary>
+		/// Display all the sectors
+		/// </summary>
+		/// <param name="floppy">Contains the DB</param>
+		/// <param name="filename">The name of the open file</param>
 		public void displayAllSectorBuffer(Floppy floppy, string filename) {
 			StringBuilder sb = new StringBuilder();
 
@@ -232,6 +238,11 @@ namespace Pasti {
 		}
 
 
+		/// <summary>
+		/// Save the content of the buffer
+		/// </summary>
+		/// <param name="buffer">Buffer to save</param>
+		/// <param name="sb">Save in a string builder</param>
 		public void saveBuffer(byte[] buffer, StringBuilder sb) {
 			for (int i = 0; i < buffer.Count(); i += 16) {
 				sb.Append(String.Format("{0:D5}  ", i));

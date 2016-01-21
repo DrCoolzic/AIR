@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA\n</di
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -80,7 +81,15 @@ namespace Pasti {
 			int bytes = fs.Read(sbuf, 0, (int)fs.Length);
 			Debug.Assert(bytes == fs.Length);	// should be same
 			fs.Close();
-			PastiStatus status = decodePasti(sbuf, fd);
+			PastiStatus status = PastiStatus.Ok;
+            try {
+				status = decodePasti(sbuf, fd);
+			} 
+			catch (IndexOutOfRangeException e) {
+				MessageBox.Show("End of File - Missing data", "Error in Pasti File");
+				return PastiStatus.NotPastiFile;
+
+			}
 			return status;
 		}
 
@@ -219,9 +228,9 @@ namespace Pasti {
 						// seems like we are reading even number
 						maxBufPos = Math.Max(maxBufPos, bpos + bpos % 2);
 						fd.tracks[track, side].standardTrack = false;
-						_infoBox.AppendText(String.Format("      Reading Track Image {0}{1} bytes SyncPos={2} ({3}-{4})\n",
-							fd.tracks[track, side].byteCount + (((td.trackFlags & TrackDesc.TRK_SYNC) != 0) ? 4 : 2), (bpos % 2 != 0) ? "(+1)" : "",
-							fd.tracks[track, side].firstSyncOffset, startPos, bpos + (bpos % 2) - 1));
+						_infoBox.AppendText(String.Format("      Reading Track Image {0}{1} bytes (including {2} header bytes) SyncPos={3} ({4}-{5})\n",
+							fd.tracks[track, side].byteCount + (((td.trackFlags & TrackDesc.TRK_SYNC) != 0) ? 4 : 2), (bpos % 2 != 0) ? "+1" : "",
+							((td.trackFlags & TrackDesc.TRK_SYNC) != 0) ? 4 : 2, fd.tracks[track, side].firstSyncOffset, startPos, bpos + (bpos % 2) - 1));
 					} // read track_data
 
 					// read all sectors data
