@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Deployment.Application;
+using System.IO;
 
 namespace ipf {
 	//http://www.thomaslevesque.com/2008/11/18/wpf-binding-to-application-settings-using-a-markup-extension/
@@ -219,5 +220,15 @@ namespace ipf {
 				InstallUpdate();
 		}
 
+		private void writeLogClick(object sender, RoutedEventArgs e) {
+			SaveFileDialog sfd = new SaveFileDialog();
+			//sfd.InitialDirectory = DirectoryName;
+			//sfd.RestoreDirectory = true;
+
+			sfd.Filter = "Text file|*.txt|All Files|*.*";
+			if (sfd.ShowDialog() == true)
+				File.WriteAllText(sfd.FileName, infoBox.Text);
+
+		}
 	}
 }

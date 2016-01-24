@@ -9,9 +9,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="24"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel  Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="1">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="1">
             <Button Margin="0,0,5,0" Width="24" Click="btUpdateClick" HorizontalAlignment="Right">
                 <Button.Content><Image Source="update.png" /></Button.Content>
             </Button>
@@ -23,15 +23,26 @@
         <TextBox Grid.Row="1" Name="infoBox" HorizontalAlignment="Stretch" TextWrapping="NoWrap" Text="" 
                  VerticalAlignment="Stretch"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="1" 
                  AllowDrop="True" PreviewDragEnter="dragEnter" PreviewDragOver="dragEnter" PreviewDrop="fileDropped"/>
-        <StackPanel  Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" Height="20" VerticalAlignment="Top" Grid.ColumnSpan="2" >
-            <Label Content="Track" Padding="0" Width="38" Height="24" HorizontalContentAlignment="Right" Margin="0,0,5,0" />
-            <TextBox Name="tbTrack" MinWidth="30" Height="24" Text="00" BorderThickness="0"  />
-            <Label Content="Side" Padding="0" Width="38" Height="24" HorizontalContentAlignment="Right" Margin="0,0,5,0" />
-            <TextBox Name="tbSide" MinWidth="30" Height="24" Text="0" BorderThickness="0"/>
-            <CheckBox Name="cbDataElem" Content="DataElem" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" IsChecked="{jlg:SettingBinding DataElemChecked}" />
-            <Button Margin="0,0,5,0" Content="Data Blocks" Width="100" Click="btBlocksClick" />
-            <TextBox Name="tbStatus" Width="441"  Height="24" BorderThickness="0" Margin="0,0,10,0" />
-        </StackPanel>
+        <Grid  Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="Track" Padding="0" Width="38" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Margin="0,0,5,0" />
+            <TextBox Grid.Column="1" Name="tbTrack" Width="30" Text="00" VerticalContentAlignment="Center" BorderThickness="0"  />
+            <Label Grid.Column="2" Content="Side" Padding="0" Width="38" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Margin="0,0,5,0" />
+            <TextBox Grid.Column="3" Name="tbSide" Width="30" Text="0" VerticalContentAlignment="Center" BorderThickness="0"/>
+            <CheckBox Grid.Column="4" Name="cbDataElem" Content="DataElem" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" IsChecked="{jlg:SettingBinding DataElemChecked}" />
+            <Button Grid.Column="5" Margin="0,0,5,0" Content="Data Blocks" Width="80" Click="btBlocksClick" />
+            <TextBox Grid.Column="6" Name="tbStatus" Height="24" BorderThickness="0" VerticalContentAlignment="Center" Margin="0,0,10,0" />
+            <Button Grid.Column="7" Margin="5,0,0,0" Content="Write Log" Width="80" Click="writeLogClick" />
+        </Grid>
     </Grid>
 </Window>
 

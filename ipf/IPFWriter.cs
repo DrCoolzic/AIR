@@ -263,7 +263,8 @@ namespace ipf {
 
 						foreach (DataElem de in sector.dataElems) {
 							writeDataElem(extraDataBlock, de.type, de.dataBytes, de.value);
-							dataOffset += ((de.dataBytes < 255) ? 2 : 3) + (int)de.dataBytes;
+							// if fuzzy segment dataBytes is null
+							dataOffset += ((de.dataBytes < 255) ? 2 : 3) + ((de.type != DataType.Fuzzy) ? (int)de.dataBytes : 0);
 						}
 						writeByte(extraDataBlock, 0);
 						dataOffset++;
@@ -329,9 +330,11 @@ namespace ipf {
 				writeByte(buffer, (byte)(byteCount & 0xFF));
 			}
 			// Write value
-			Debug.Assert(byteCount == value.Count, "Length error in dataElem");
-			for (int i = 0; i < byteCount; i++) {
-				writeByte(buffer, value[i]);
+			if (type != DataType.Fuzzy) {
+				Debug.Assert(byteCount == value.Count, "Length error in dataElem");
+				for (int i = 0; i < byteCount; i++) {
+					writeByte(buffer, value[i]);
+				}
 			}
 		}
 
