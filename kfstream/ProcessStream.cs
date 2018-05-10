@@ -86,6 +86,11 @@ namespace KFStreamPackage {
 		/// The number of flux transitions for this revolution.
 		/// </summary>
 		public int fluxCount;
+
+		/// <summary>Gives the position of the index pulse inside the flux that contains it. The position 
+		/// before the index signal is given in nanoseconds . Note that in the case of no
+		/// flux area at the beginning of the track this value can be huge</summary>
+		public int preIndexTime;
 	}
 
 
@@ -107,7 +112,7 @@ namespace KFStreamPackage {
 		/// <param name="fileName">Complete name of the stream file to read</param>
 		/// <param name="infoBox">Text box used to display debug information</param>
 		/// <returns>True if file processed without problem; false if error while processing</returns>
-		public bool readStreamTrack(string fileName, TextBox infoBox) {
+		public StreamStatus readStreamTrack(string fileName, TextBox infoBox) {
 			_reader = new KFReader();
 			StreamStatus status = _reader.readStream(fileName);
 
@@ -133,6 +138,7 @@ namespace KFStreamPackage {
 					_fluxDataRev[rev].fluxCount = _reader.Indexes[rev + 1].fluxPosition - _reader.Indexes[rev].fluxPosition;
 					int offset = _reader.Indexes[rev].fluxPosition;
 					_fluxDataRev[rev].firstFluxIndex = offset;
+					_fluxDataRev[rev].preIndexTime = (int)((double)_reader.Indexes[rev].preIndexTime * sample);
 
 					for (int f = 0; f < _fluxDataRev[rev].fluxCount; f++) {
 						// convert samples for current revolution
@@ -152,10 +158,9 @@ namespace KFStreamPackage {
 
 				_fluxData.maxFlux = fluxMax;
 				_fluxData.minFlux = fluxMin;
-				return true;
 			}	// read correctly
 
-			return false;
+			return status;
 		}
 
 		/// <summary>
@@ -166,8 +171,8 @@ namespace KFStreamPackage {
 		/// <param name="side">Store the information for this side</param>
 		/// <returns>True if file processed without problem; false if error while processing</returns>
 		/// See also <see cref="readTrack()"/> function.
-		public Task<bool> readStreamTrackAsync(string name, TextBox infoBox) {
-			return Task<bool>.Run(() => readStreamTrack(name, infoBox));
+		public Task<StreamStatus> readStreamTrackAsync(string name, TextBox infoBox) {
+			return Task<StreamStatus>.Run(() => readStreamTrack(name, infoBox));
 		}
 
 	}	// streamProcess Class

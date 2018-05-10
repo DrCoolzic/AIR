@@ -31,7 +31,7 @@
     <SuiteName>Air</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.html</WebPage>
-    <ApplicationRevision>8</ApplicationRevision>
+    <ApplicationRevision>9</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -57,10 +57,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>5E049D5DC8A8DD1344D3F51975D0F32FCE3197BF</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>259CD416095ABA506BE91C011212602A1F509A2E</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>ipf_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>IPF_2_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -137,6 +137,8 @@
     </EmbeddedResource>
     <None Include="ipf.dcf" />
     <None Include="ipf.dox" />
+    <None Include="IPF_1_TemporaryKey.pfx" />
+    <None Include="IPF_2_TemporaryKey.pfx" />
     <None Include="ipf_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

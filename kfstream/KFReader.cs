@@ -116,6 +116,7 @@ public struct IndexInfo {
 	/// is given as a number of sample clocks before the index signal. Note that in the case of no
 	/// flux area at the beginning of the track this value can be huge</summary>
 	public int preIndexTime;
+    public int postIndexTime;
 }
 
 
@@ -286,7 +287,7 @@ public class KFReader {
 	/// function</remarks>
 	public string InfoString {
 		get {
-			if (_info.Length == 0) return "";
+			if ((_info == null) || (_info.Length == 0)) return "";
 			return _info.ToString();
 		}
 	}
@@ -773,7 +774,7 @@ public class KFReader {
 
 				// set sub-cell time before and after the index signal
 				_indexArray[iidx].preIndexTime = preIndexTime;
-				//_indexArray[iidx].postIndexTime = iftime - preIndexTime;
+				_indexArray[iidx].postIndexTime = iftime - preIndexTime;
 
 				// itime contains the complete cell time for the previous index signal; it must only contain the postIndexTime
 				// act.sum-prev.iftime+prev.postIndexTime, where prev.postIndexTime=prev.iftime-prev.preIndexTime
@@ -806,7 +807,11 @@ public class KFReader {
 		if (_indexIntInfo[iidx - 1].streamPos >= _fluxCount)
 			_fluxCount++;
 
-		return StreamStatus.sdsOk;
+        // check for damaged index signal at the last revolution
+        if ((_indexIntInfo[iidx - 1].sampleCounter == 0) && (_indexArray[iidx - 1].preIndexTime == 0) && (_indexArray[iidx - 1].postIndexTime == 0))
+            return StreamStatus.sdsMissingIndex;
+
+        return StreamStatus.sdsOk;
 	}	// end of indexAnalysis()
 
 

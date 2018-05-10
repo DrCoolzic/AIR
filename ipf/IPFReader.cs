@@ -424,15 +424,16 @@ namespace ipf {
 
 						// we read the dataSample except if the data type if fuzzy
 						List<byte> dataSample = new List<byte>();
+						int dataBytes = (int)(dataSize / 8) + ((dataSize % 8 == 0) ? 0 : 1);
 						if (dataType != DataType.Fuzzy) {
-							for (int n = 0; n < dataSize / 8; n++)
+							for (int n = 0; n < dataBytes; n++)
 								dataSample.Add(buffer[dataPos++]);
 
 							foreach (byte b in dataSample)
 								if (_dataElem.IsChecked == true) dataString.Append(String.Format(" {0:X2}", b));
 						}
 
-						data.dataBytes = dataSize / 8;
+						data.dataBytes = (uint)dataBytes;
 						data.type = dataType;
 						data.value = dataSample;
 						sector.dataElems.Add(data);

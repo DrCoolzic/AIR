@@ -118,8 +118,10 @@ namespace KFStreamPackage {
 			writeHardwareInfo(buffer, info);
 
 			for (int rev = 0; rev < revolutions.Count(); rev++) {
-				writeStreamInfo(buffer, streampos, 0);				
-				writeStreamIndex(buffer, streampos, 0, indexCounter);
+				writeStreamInfo(buffer, streampos, 0);
+				int samplePos = (int)((double)revolutions[rev].preIndexTime * _sckValue / 1000000000.0);
+				writeStreamIndex(buffer, streampos, samplePos, indexCounter);
+
 				indexCounter += (int)(revolutions[rev].revolutionTime * _ickValue / 1000000000.0);
 
 				for (int fluxIndex = revolutions[rev].firstFluxIndex;
@@ -159,7 +161,7 @@ namespace KFStreamPackage {
 			}	// all revolutions
 
 			writeStreamEnd(buffer, streampos, 0);
-			writeStreamIndex(buffer, streampos, 0, indexCounter);
+			writeStreamIndex(buffer, streampos, 1, indexCounter);
 			writeStreamEOF(buffer);
 			return true;
 		}

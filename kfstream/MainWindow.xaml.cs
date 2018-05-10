@@ -73,11 +73,11 @@ namespace KFStream {
 			tbStatus.Clear();
 			infoBox.Clear();
 
-			infoBox.AppendText(String.Format("Reading file {0}\n", fileName));
+			infoBox.AppendText(String.Format("Reading stream file: {0}\n", fileName));
 			ProcessStream s = new ProcessStream();
-			bool status = s.readStreamTrack(file, infoBox);
-			infoBox.AppendText(String.Format("file read {0}\n", status?"OK" : " with errors"));
-			if (!status) return;
+			StreamStatus status = s.readStreamTrack(file, infoBox);
+			infoBox.AppendText(String.Format("file read {0}\n", status == StreamStatus.sdsOk ? "correctly" : "incorrectly status = " + status.ToString()));
+			if (status != StreamStatus.sdsOk) return;
 
 			KFReader kfr = s.Reader;
 			 _fluxData = s.Data;
@@ -86,23 +86,26 @@ namespace KFStream {
 			double totalFlux = 0;
 			for (int i = 0; i < _fluxData.totalFluxCount; i++)
 				totalFlux += _fluxData.fluxValue[i];
-				infoBox.AppendText(string.Format("Flux Count={0} - total time {1} ms for {2} revolutions\n",
+			infoBox.AppendText(string.Format("\nFlux Count={0} - total time {1} ms for {2} revolutions\n",
 					_fluxData.totalFluxCount, totalFlux / 1000, _fluxDataRev.Count()));
 
 			double tick = 1000000.0 / kfr.SampleClock;
-			infoBox.AppendText(string.Format("Disk Speed (min-avg-max)  {0:F3} - {1:F3} - {2:F3} RPM --- Min flux={3:f2} µs / Max flux={4:f2} µs\n",
-				kfr.StreamStat.minrpm, kfr.StreamStat.avgrpm, kfr.StreamStat.maxrpm, kfr.StreamStat.fluxMin * tick, kfr.StreamStat.fluxMax * tick));
+			infoBox.AppendText(string.Format("Min flux={0:f2} µs / Max flux={1:f2} µs\n",
+					kfr.StreamStat.fluxMin * tick, kfr.StreamStat.fluxMax * tick));
+
+			for (int rev = 0; rev < _fluxDataRev.Count(); rev++) {
+				infoBox.AppendText(String.Format("   Rev {0} has {1} transitions - revolution time {2:F3} ms\n", rev, _fluxDataRev[rev].fluxCount, _fluxDataRev[rev].revolutionTime / 1000000.0));
+			}
+			
+			infoBox.AppendText(string.Format("\nDisk Speed (min-avg-max):  {0:F3} - {1:F3} - {2:F3} RPM\n",
+				kfr.StreamStat.minrpm, kfr.StreamStat.avgrpm, kfr.StreamStat.maxrpm));
 
 			string hardware = kfr.InfoString;
 			if (hardware != "") {
 				string[] info = hardware.Split(',');
-				infoBox.AppendText("Hardware information \n");
+				infoBox.AppendText("\nHardware information \n");
 				for (int i = 0; i < info.Count(); i++)
 					infoBox.AppendText(string.Format("   {0}\n", info[i]));
-			}
-
-			for (int rev = 0; rev < _fluxDataRev.Count(); rev++) {
-				infoBox.AppendText(String.Format("   Rev {0} has {1} transitions - revolution time {2:F3} ms\n", rev, _fluxDataRev[rev].fluxCount, _fluxDataRev[rev].revolutionTime / 1000000.0));
 			}
 		}
 

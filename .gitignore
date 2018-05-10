@@ -10,6 +10,7 @@ html/
 *.sln.docstates
 
 Archive/
+.vs/
 
 # Build results
 
